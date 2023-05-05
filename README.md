@@ -45,59 +45,60 @@ They are formatted for use with the FuzzyID2 software package for taxonomic assi
 
  
 Specific methods for reference library construction under numbered headings of general steps above.
-1. Determine species list
-	The final list of marine species in Canada was comprised of the list from Brian Coad's website and observations from OBIS for Canadian waters. This list totals 1543 species in Actinopterygii and is available as ‘Coad_OBIS_fish_list_Canada.csv’.
+**Determine species list**
+The final list of marine species in Canada was comprised of the list from Brian Coad's website and observations from OBIS for Canadian waters. This list totals 1543 species in Actinopterygii and is available as ‘Coad_OBIS_fish_list_Canada.csv’.
 
-2. Gather Genbank entries using NCBI E-Utilities
-1.	esearch and efetch species names and gene names according to list 
-a.	Download genbank formatted files. Do not download RefSeq entries as these are duplicates.
-2.	esearch and efetch alternate naming schemes (e.g. small/large ribosomal sub-unit) for each species and append to existing files. Same as above.
-3.	remove all files with zero size.
-a.	find . -size  0 -print -delete
-4.	cat all files into single genbank formatted file and proceed with stage 2.
-a.	cat *.gb > all.gb
-3. Perform in silico PCR
-1.	convert to obitools database
-a.	obiconvert -d /home/kristen/Documents/ncbi20201008/ --ecopcrdb-output=16S.db /home/kristen/Documents/barcoding_gap/16S_species/REFLIB_PIPELINE/species_gb/all.gb
-2.	run ecoPCR for specific primers with the following flags (e.g. 16S given)
-a.	ecoPCR -d 16S.db -e 3 -l 100 -L 300 AGCGYAATCACTTGTCTYTTAA CRBGGTCGCCCCAACCRAA > 16S_ecopcr_out_raw.txt
-3.	Remove first 13 lines of output file. 
-4.	Reformat into FuzzyID2 reference library fasta format -> reflib1
+**Gather Genbank entries using NCBI E-Utilities**
+  1. esearch and efetch species names and gene names according to list 
+    - Download genbank formatted files. Do not download RefSeq entries as these are duplicates.
+  2. esearch and efetch alternate naming schemes (e.g., small/large ribosomal sub-unit) for each species and append to existing files. Same as above.
+  3. remove all files with zero size.
+    - find . -size  0 -print -delete
+  4. cat all files into single genbank formatted file and proceed with stage 2.
+    - cat *.gb > all.gb
 
-4. Determine which entries failed in silico PCR
-1.	***work from file in reflib directory.
-2.	obtain list of gb accession numbers in reflib1 
-i)	sed -n '/^>/p' 16S_reflib1.fasta > accession_list_reflib1.txt
-ii)	reformat in excel to just accession numbers, sort in excel.
-3.	obtain list of gb accession numbers in all.gb (raw gb entries). 
-i)	sed -n '/^ACCESSION/p' all.gb > accession_list_all.txt
-ii)	reformat in excel to just accession numbers, sort in excel.
-4.	Determine which accession numbers were cut by in silico PCR
-i)	comm -23 <(sort accession_list_all.csv | uniq) <(sort accession_list_reflib1.csv | uniq) > accession_list_not_ecopcr.txt
+**Perform in _silico_ PCR**
+  1. Convert to obitools database
+    - obiconvert -d /home/kristen/Documents/ncbi20201008/ --ecopcrdb-output=16S.db /home/kristen/Documents/barcoding_gap/16S_species/REFLIB_PIPELINE/species_gb/all.gb
+  2. Run ecoPCR for specific primers with the following flags (e.g. 16S given)
+    - ecoPCR -d 16S.db -e 3 -l 100 -L 300 AGCGYAATCACTTGTCTYTTAA CRBGGTCGCCCCAACCRAA > 16S_ecopcr_out_raw.txt
+  3. Remove first 13 lines of output file. 
+  4. Reformat into FuzzyID2 reference library fasta format -> reflib1
+
+**Determine which entries failed _in silico_ PCR**
+1. work from file in reflib directory.
+2. obtain list of gb accession numbers in reflib1 
+  - sed -n '/^>/p' 16S_reflib1.fasta > accession_list_reflib1.txt
+  - reformat in excel to just accession numbers, sort in excel.
+3. obtain list of gb accession numbers in all.gb (raw gb entries). 
+  - sed -n '/^ACCESSION/p' all.gb > accession_list_all.txt
+  - reformat in excel to just accession numbers, sort in excel.
+4. Determine which accession numbers were cut by in silico PCR
+  - comm -23 <(sort accession_list_all.csv | uniq) <(sort accession_list_reflib1.csv | uniq) > accession_list_not_ecopcr.txt
 5.	use list of accession numbers in esearch and efetch commands, this time download fasta format.
 6.	Make reflib1 into a blast database and blast the extra sequences.
 7.	Steps to make reflib1 into database
-i)	extract species names from each entry in reflib1 and look up taxids at website by file: https://www.ncbi.nlm.nih.gov/Taxonomy/TaxIdentifier/tax_identifier.cgi
-ii)	truncate headers in reflib1 to 50 characters
-iii)	merge the reflib1 truncated header file with the taxid file to create a taxid map for making the local blast db
-iv)	makeblastdb -in 16S_reflib1_headertrunc50.fasta -parse_seqids -blastdb_version 5 -taxid_map 16S_taxid_map.csv -title "16Sreflib1" -dbtype nt
-v)	blast the remaining sequences to reflib1 to see which sequences are a potential match, output is a list of query accession numbers that had a match
-vi)	blastn -db 16S_reflib1_headertrunc50.fasta -query not_ecopcr_oneliner2.fasta -evalue 1e-6 -outfmt '6 qseqid' -max_target_seqs 1 > blast_out.txt
-8.	take output and acquire the full header and sequence from the original query file not_ecopcr_oneliner2.fasta using awk batch cmd.
-9.	separate output into batches and align manually.
-10.	format trimmed sequences for fuzzyid2:
-i)	print headers to file
+  - extract species names from each entry in reflib1 and look up taxids at website by file: https://www.ncbi.nlm.nih.gov/Taxonomy/TaxIdentifier/tax_identifier.cgi
+  - truncate headers in reflib1 to 50 characters
+  - merge the reflib1 truncated header file with the taxid file to create a taxid map for making the local blast db
+  - makeblastdb -in 16S_reflib1_headertrunc50.fasta -parse_seqids -blastdb_version 5 -taxid_map 16S_taxid_map.csv -title "16Sreflib1" -dbtype nt
+  - blast the remaining sequences to reflib1 to see which sequences are a potential match, output is a list of query accession numbers that had a match
+  - blastn -db 16S_reflib1_headertrunc50.fasta -query not_ecopcr_oneliner2.fasta -evalue 1e-6 -outfmt '6 qseqid' -max_target_seqs 1 > blast_out.txt
+8. Take output and acquire the full header and sequence from the original query file not_ecopcr_oneliner2.fasta using awk batch cmd.
+9. Separate output into batches and align manually.
+10. Format trimmed sequences for fuzzyid2:
+  - print headers to file
 sed -n '/^>/p' blast_outpu_all_trimmed.fasta > blast_output_all_headers.txt
-ii)	delete headers to make a sequence file
+  - delete headers to make a sequence file
 sed -e '/^>/d' blast_output_all_trimmed.fasta > blast_output_all_trimmed_seq.txt
-iii)	parse headers in excel to fuzzyid2 format by deleting all information except accession number and species name. Add in column for family name and export to text file
-iv)	add in new headers to sequences.
+  - parse headers in excel to fuzzyid2 format by deleting all information except accession number and species name. Add in column for family name and export to text file
+  - add in new headers to sequences.
 paste -d \\n blast_output_all_trimmed_formattedheader.txt blast_output_all_trimmed_seq.txt > blast_output_all_formattedfuzzyid2.fasta
-v)	add in trimmed sequences to reflib1 -> reflib2.
-vi)	remove short sequences, those sequences that are obviously cut-off and not natural length variation. If there are conspecifics with much larger sequences then remove the entry with the sequence that was cut off.
+  - add in trimmed sequences to reflib1 -> reflib2.
+  - remove short sequences, those sequences that are obviously cut-off and not natural length variation. If there are conspecifics with much larger sequences then remove the entry with the sequence that was cut off.
 
 
-5. Identify unique haplotypes and collapse entries 
+**Identify unique haplotypes and collapse entries** 
 1.	Align reflib2_Acitnopterygii using mafft and load into R.
 2.	Execute steps in reflib2haplos.R **Use genetic distances for discovering unique haplotypes, do not use identities!
 3.	Go through list of unique haplos and record changes to reflib2. The rules for collapsing unique haplotypes are: maximum of three entries for each unique haplotype per species. When a haplotype is shared between 2 or more species, record those species and form a group. Name group and change accession number to group initials (2), followed by group number and 4 zeros and individual number. The rest of the header contains the Group Name for Family (i.e. Agonidae1) followed by the group code (i.e. AG1) followed by a unique species identifier that is sequential for all groups (i.e. species1). Each haplotype in a group will have the exact same Family, Genus and Species text to avoid any program error. For example, each entry for Agonidae1 group is AG100001_Agonidae1_AG1_species1, AG100002_Agonidae1_AG1_species1, and AG100003_Agonidae1_AG1_species1.
