@@ -59,43 +59,43 @@ The final list of marine species in Canada was comprised of the list from Brian 
 
 **Perform in _silico_ PCR**
   1. Convert to obitools database
-    - obiconvert -d /home/kristen/Documents/ncbi20201008/ --ecopcrdb-output=16S.db /home/kristen/Documents/barcoding_gap/16S_species/REFLIB_PIPELINE/species_gb/all.gb
+      - obiconvert -d /home/kristen/Documents/ncbi20201008/ --ecopcrdb-output=16S.db /home/kristen/Documents/barcoding_gap/16S_species/REFLIB_PIPELINE/species_gb/all.gb
   2. Run ecoPCR for specific primers with the following flags (e.g. 16S given)
-    - ecoPCR -d 16S.db -e 3 -l 100 -L 300 AGCGYAATCACTTGTCTYTTAA CRBGGTCGCCCCAACCRAA > 16S_ecopcr_out_raw.txt
+      - ecoPCR -d 16S.db -e 3 -l 100 -L 300 AGCGYAATCACTTGTCTYTTAA CRBGGTCGCCCCAACCRAA > 16S_ecopcr_out_raw.txt
   3. Remove first 13 lines of output file. 
   4. Reformat into FuzzyID2 reference library fasta format -> reflib1
 
 **Determine which entries failed _in silico_ PCR**
-1. work from file in reflib directory.
-2. obtain list of gb accession numbers in reflib1 
-  - sed -n '/^>/p' 16S_reflib1.fasta > accession_list_reflib1.txt
-  - reformat in excel to just accession numbers, sort in excel.
-3. obtain list of gb accession numbers in all.gb (raw gb entries). 
-  - sed -n '/^ACCESSION/p' all.gb > accession_list_all.txt
-  - reformat in excel to just accession numbers, sort in excel.
-4. Determine which accession numbers were cut by in silico PCR
-  - comm -23 <(sort accession_list_all.csv | uniq) <(sort accession_list_reflib1.csv | uniq) > accession_list_not_ecopcr.txt
-5.	use list of accession numbers in esearch and efetch commands, this time download fasta format.
-6.	Make reflib1 into a blast database and blast the extra sequences.
-7.	Steps to make reflib1 into database
-  - extract species names from each entry in reflib1 and look up taxids at website by file: https://www.ncbi.nlm.nih.gov/Taxonomy/TaxIdentifier/tax_identifier.cgi
-  - truncate headers in reflib1 to 50 characters
-  - merge the reflib1 truncated header file with the taxid file to create a taxid map for making the local blast db
-  - makeblastdb -in 16S_reflib1_headertrunc50.fasta -parse_seqids -blastdb_version 5 -taxid_map 16S_taxid_map.csv -title "16Sreflib1" -dbtype nt
-  - blast the remaining sequences to reflib1 to see which sequences are a potential match, output is a list of query accession numbers that had a match
-  - blastn -db 16S_reflib1_headertrunc50.fasta -query not_ecopcr_oneliner2.fasta -evalue 1e-6 -outfmt '6 qseqid' -max_target_seqs 1 > blast_out.txt
-8. Take output and acquire the full header and sequence from the original query file not_ecopcr_oneliner2.fasta using awk batch cmd.
-9. Separate output into batches and align manually.
-10. Format trimmed sequences for fuzzyid2:
-  - print headers to file
-sed -n '/^>/p' blast_outpu_all_trimmed.fasta > blast_output_all_headers.txt
-  - delete headers to make a sequence file
-sed -e '/^>/d' blast_output_all_trimmed.fasta > blast_output_all_trimmed_seq.txt
-  - parse headers in excel to fuzzyid2 format by deleting all information except accession number and species name. Add in column for family name and export to text file
-  - add in new headers to sequences.
-paste -d \\n blast_output_all_trimmed_formattedheader.txt blast_output_all_trimmed_seq.txt > blast_output_all_formattedfuzzyid2.fasta
-  - add in trimmed sequences to reflib1 -> reflib2.
-  - remove short sequences, those sequences that are obviously cut-off and not natural length variation. If there are conspecifics with much larger sequences then remove the entry with the sequence that was cut off.
+  1. work from file in reflib directory.
+  2. obtain list of gb accession numbers in reflib1 
+      - sed -n '/^>/p' 16S_reflib1.fasta > accession_list_reflib1.txt
+      - reformat in excel to just accession numbers, sort in excel.
+  3. obtain list of gb accession numbers in all.gb (raw gb entries). 
+      - sed -n '/^ACCESSION/p' all.gb > accession_list_all.txt
+      - reformat in excel to just accession numbers, sort in excel.
+  4. Determine which accession numbers were cut by in silico PCR
+      - comm -23 <(sort accession_list_all.csv | uniq) <(sort accession_list_reflib1.csv | uniq) > accession_list_not_ecopcr.txt
+  5.	use list of accession numbers in esearch and efetch commands, this time download fasta format.
+  6.	Make reflib1 into a blast database and blast the extra sequences.
+  7.	Steps to make reflib1 into database
+      - extract species names from each entry in reflib1 and look up taxids at website by [file](https://www.ncbi.nlm.nih.gov/Taxonomy/TaxIdentifier/tax_identifier.cgi) 
+      - truncate headers in reflib1 to 50 characters
+      - merge the reflib1 truncated header file with the taxid file to create a taxid map for making the local blast db
+      - makeblastdb -in 16S_reflib1_headertrunc50.fasta -parse_seqids -blastdb_version 5 -taxid_map 16S_taxid_map.csv -title "16Sreflib1" -dbtype nt
+      - blast the remaining sequences to reflib1 to see which sequences are a potential match, output is a list of query accession numbers that had a match
+      - blastn -db 16S_reflib1_headertrunc50.fasta -query not_ecopcr_oneliner2.fasta -evalue 1e-6 -outfmt '6 qseqid' -max_target_seqs 1 > blast_out.txt
+  8. Take output and acquire the full header and sequence from the original query file not_ecopcr_oneliner2.fasta using awk batch cmd.
+  9. Separate output into batches and align manually.
+  10. Format trimmed sequences for fuzzyid2:
+      - print headers to file
+  sed -n '/^>/p' blast_outpu_all_trimmed.fasta > blast_output_all_headers.txt
+      - delete headers to make a sequence file
+  sed -e '/^>/d' blast_output_all_trimmed.fasta > blast_output_all_trimmed_seq.txt
+      - parse headers in excel to fuzzyid2 format by deleting all information except accession number and species name. Add in column for family name and export to text file
+      - add in new headers to sequences.
+  paste -d \\n blast_output_all_trimmed_formattedheader.txt blast_output_all_trimmed_seq.txt > blast_output_all_formattedfuzzyid2.fasta
+      - add in trimmed sequences to reflib1 -> reflib2.
+      - remove short sequences, those sequences that are obviously cut-off and not natural length variation. If there are conspecifics with much larger sequences then remove the entry with the sequence that was cut off.
 
 
 **Identify unique haplotypes and collapse entries** 
