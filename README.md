@@ -22,7 +22,7 @@ They are formatted for use with the FuzzyID2 software package for taxonomic assi
 * [Shi Z.-Y., Yang C.-Q., Hao M., Wang X.-Y., Ward R.D., and Zhang A.-B. 2018. FuzzyID2: A software package for large data set species identification via barcoding and metabarcoding using hidden Markov models and fuzzy set methods. Mol. Ecol. Resour. 18(3): 666–675.](https://onlinelibrary.wiley.com/doi/10.1111/1755-0998.12738)
 
 ## File Descriptions:
-1. 12S_reference_library_Actinopterygii.fasta: is a fasta formatted file with headers formatted for use with FuzzyID2 softwarein the format of GBaccession_Family_Genus_Species. *Note that original Genbank Accession numbers are maintained with the exceptions detailed for shared haplotypes between species.
+1. **12S_reference_library_Actinopterygii.fasta**: is a fasta formatted file with headers formatted for use with FuzzyID2 softwarein the format of GBaccession_Family_Genus_Species. *Note that original Genbank Accession numbers are maintained with the exceptions detailed for shared haplotypes between species.
 
 2. **12S_haplogroups_list.csv**: is a csv formatted file containing the list of haplotypes shared between species and genera. The header is formatted as (1) accession number change to group initials (2), followed by group number and 4 zeros and individual number. The rest of the header contains the Group Name for Family (i.e. Agonidae1) followed by the group code (i.e. AG1) followed by a unique species identifier that is sequential for all groups (i.e. species1). Each haplotype in a group will have the exact same Family, Genus and Species text to avoid any program error. For example, each entry for Agonidae1 group is AG100001_Agonidae1_AG1_species1, AG100002_Agonidae1_AG1_species1, and AG100003_Agonidae1_AG1_species1.
 
@@ -35,13 +35,13 @@ They are formatted for use with the FuzzyID2 software package for taxonomic assi
 
 *The general overview of reference library construction*
 
-  1. Determine species list for _Actinopterygii_ for Canadian marine waters in Atlantic and Pacific Oceans.
-  2. Gather GenBank entries for genes and species of choice.
-  3. Perform in silico PCR on all entries -> reflib1.
-  4. Determine which entries failed in silico PCR and manually align + reflib1 -> reflib2.
-  5. Identify unique haplotypes and collapse entries + reflib2 -> reflib3.
-  6. Calculate 95% confidence intervals of intraspecific distances and generate list of GenBank accession numbers greater than cut-off.
-  7. Visually inspect potential GenBank ID errors using phylogenetic trees and remove entries from reference library + reflib3 -> reflib4.
+    1. Determine species list for _Actinopterygii_ for Canadian marine waters in Atlantic and Pacific Oceans.
+    2. Gather GenBank entries for genes and species of choice.
+    3. Perform in silico PCR on all entries -> reflib1.
+    4. Determine which entries failed in silico PCR and manually align + reflib1 -> reflib2.
+    5. Identify unique haplotypes and collapse entries + reflib2 -> reflib3.
+    6. Calculate 95% confidence intervals of intraspecific distances and generate list of GenBank accession numbers greater than cut-off.
+    7. Visually inspect potential GenBank ID errors using phylogenetic trees and remove entries from reference library + reflib3 -> reflib4.
 
  
 Specific methods for reference library construction under numbered headings of general steps above.
