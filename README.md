@@ -50,12 +50,12 @@ The final list of marine species in Canada was comprised of the list from Brian 
 
 **Gather Genbank entries using NCBI E-Utilities**
   1. esearch and efetch species names and gene names according to list 
-    - Download genbank formatted files. Do not download RefSeq entries as these are duplicates.
+      - Download genbank formatted files. Do not download RefSeq entries as these are duplicates.
   2. esearch and efetch alternate naming schemes (e.g., small/large ribosomal sub-unit) for each species and append to existing files. Same as above.
   3. remove all files with zero size.
-    - find . -size  0 -print -delete
+      - find . -size  0 -print -delete
   4. cat all files into single genbank formatted file and proceed with stage 2.
-    - cat *.gb > all.gb
+      - cat *.gb > all.gb
 
 **Perform in _silico_ PCR**
   1. Convert to obitools database
