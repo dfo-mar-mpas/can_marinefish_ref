@@ -78,6 +78,7 @@ The final list of marine species in Canada was comprised of the list from Brian 
   5.	use list of accession numbers in esearch and efetch commands, this time download fasta format.
   6.	Make reflib1 into a blast database and blast the extra sequences.
   7.	Steps to make reflib1 into database
+  
       - extract species names from each entry in reflib1 and look up taxids at website by
       [file](https://www.ncbi.nlm.nih.gov/Taxonomy/TaxIdentifier/tax_identifier.cgi) 
       - truncate headers in reflib1 to 50 characters
