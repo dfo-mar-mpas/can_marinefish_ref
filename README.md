@@ -1,6 +1,5 @@
-# can_marinefish_ref
+# Environmental DNA reference database for Canadian Marine Fish species using 12s and 16s genes.
 <img src="inst/hexlogo-01.png" align="left" width="200px"/>
-Environmental DNA reference database for Canadian Marine Fish species using 12s and 16s genes.
 
 Here are two custom DNA reference libraries for marine fish (_Actinopterygii_ only) in Canada (Pacific and Atlantic Oceans) for the 12S and 16S amplicons described in [He et al., 2022](https://cdnsciencepub.com/doi/10.1139/cjfas-2021-0215). 
 
@@ -31,7 +30,7 @@ They are formatted for use with the FuzzyID2 software package for taxonomic assi
 5. **Coad_OBIS_fish_list_Canada.csv**: the final species list used as a template to gather region specific reference DNA sequences -> all species that spend at least part of their life cycle in marine or brackish waters in the Atlantic and Pacific Oceans within Canadian waters.
 
 
-*The general overview of reference library construction*
+## The general overview of reference library construction
 
     1. Determine species list for _Actinopterygii_ for Canadian marine waters in Atlantic and Pacific Oceans.
     2. Gather GenBank entries for genes and species of choice.
@@ -41,8 +40,8 @@ They are formatted for use with the FuzzyID2 software package for taxonomic assi
     6. Calculate 95% confidence intervals of intraspecific distances and generate list of GenBank accession numbers greater than cut-off.
     7. Visually inspect potential GenBank ID errors using phylogenetic trees and remove entries from reference library + reflib3 -> reflib4.
 
- 
 Specific methods for reference library construction under numbered headings of general steps above.
+
 **Determine species list**
 The final list of marine species in Canada was comprised of the list from Brian Coad's website and observations from OBIS for Canadian waters. This list totals 1543 species in Actinopterygii and is available as ‘Coad_OBIS_fish_list_Canada.csv’.
 
@@ -75,13 +74,13 @@ The final list of marine species in Canada was comprised of the list from Brian 
       - comm -23 <(sort accession_list_all.csv | uniq) <(sort accession_list_reflib1.csv | uniq) > accession_list_not_ecopcr.txt
   5.	use list of accession numbers in esearch and efetch commands, this time download fasta format.
   6.	Make reflib1 into a blast database and blast the extra sequences.
-  7.	Steps to make reflib1 into database
+  7.	Steps to make reflib1 into database.
       - extract species names from each entry in reflib1 and look up taxids at website by [file](https://www.ncbi.nlm.nih.gov/Taxonomy/TaxIdentifier/tax_identifier.cgi) 
       - truncate headers in reflib1 to 50 characters
       - merge the reflib1 truncated header file with the taxid file to create a taxid map for making the local blast db
       - makeblastdb -in 16S_reflib1_headertrunc50.fasta -parse_seqids -blastdb_version 5 -taxid_map 16S_taxid_map.csv -title "16Sreflib1" -dbtype nt
-      - blast the remaining sequences to reflib1 to see which sequences are a potential match, output is a list of query accession numbers that had a match
-      - blastn -db 16S_reflib1_headertrunc50.fasta -query not_ecopcr_oneliner2.fasta -evalue 1e-6 -outfmt '6 qseqid' -max_target_seqs 1 > blast_out.txt
+      - blast the remaining sequences to reflib1 to see which sequences are a potential match, output is a list of query accession numbers that had a match.
+      - blastn -db 16S_reflib1_headertrunc50.fasta -query not_ecopcr_oneliner2.fasta -evalue 1e-6 -outfmt '6 qseqid' -max_target_seqs 1 > blast_out.txt.
   8. Take output and acquire the full header and sequence from the original query file not_ecopcr_oneliner2.fasta using awk batch cmd.
   9. Separate output into batches and align manually.
   10. Format trimmed sequences for fuzzyid2:
