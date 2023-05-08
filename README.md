@@ -1,4 +1,5 @@
 # can_marinefish_ref
+<img src="inst/hexlogo-01.png" align="left" width="200px"/>
 Environmental DNA reference database for Canadian Marine Fish species using 12s and 16s genes.
 
 Here are two custom DNA reference libraries for marine fish (_Actinopterygii_ only) in Canada (Pacific and Atlantic Oceans) for the 12S and 16S amplicons described in [He et al., 2022](https://cdnsciencepub.com/doi/10.1139/cjfas-2021-0215). These are reference libraries specifically constructed for amplicons of the following markers:
@@ -12,6 +13,8 @@ Here are two custom DNA reference libraries for marine fish (_Actinopterygii_ on
     Reverse primer = 5’- CRBGGTCGCCCCAACCRAA -3’
     
 They are formatted for use with the FuzzyID2 software package for taxonomic assignment (She et al., 2018).
+
+<br clear="left"/>
 
 * [He, X., Stanley, R., Rubidge, E., Jeffrey, N., Hamilton, L., Westfall, K.M., Gilmore, S., Roux, L-M., Gale, K., Heaslip, S., Abbott, C. 2022. Fish community surveys in eelgrass beds using both eDNA metabarcoding and seining: implications for biodiversity monitoring in the coastal zone. Canadian Journal of Fisheries and Aquatic Sciences, DOI: 10.1139/cjfas-2021-0215](https://cdnsciencepub.com/doi/10.1139/cjfas-2021-0215)
 
