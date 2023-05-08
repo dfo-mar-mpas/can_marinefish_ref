@@ -54,7 +54,7 @@ The final list of marine species in Canada was comprised of the list from Brian 
   4. cat all files into single genbank formatted file and proceed with stage 2.
       - cat *.gb > all.gb
 
-[**Perform in _silico_ PCR**](#step3)
+**Perform in _silico_ PCR** <a name="step3"/>
   1. Convert to obitools database
       - obiconvert -d /home/kristen/Documents/ncbi20201008/ --ecopcrdb-output=16S.db /home/kristen/Documents/barcoding_gap/16S_species/REFLIB_PIPELINE/species_gb/all.gb
   2. Run ecoPCR for specific primers with the following flags (e.g. 16S given)
@@ -62,7 +62,7 @@ The final list of marine species in Canada was comprised of the list from Brian 
   3. Remove first 13 lines of output file. 
   4. Reformat into FuzzyID2 reference library fasta format -> reflib1
 
-[**Determine which entries failed _in silico_ PCR**](#step4)
+**Determine which entries failed _in silico_ PCR** <a name="step4"/>
   1. work from file in reflib directory.
   2. obtain list of gb accession numbers in reflib1 
       - sed -n '/^>/p' 16S_reflib1.fasta > accession_list_reflib1.txt
@@ -95,7 +95,7 @@ The final list of marine species in Canada was comprised of the list from Brian 
       - remove short sequences, those sequences that are obviously cut-off and not natural length variation. If there are conspecifics with much larger sequences then remove the entry with the sequence that was cut off.
 
 
-[**Identify unique haplotypes and collapse entries**](step5)
+**Identify unique haplotypes and collapse entries** <a name="step5"/>
   1. Align reflib2_Acitnopterygii using mafft and load into R.
   2. Execute steps in reflib2haplos.R **Use genetic distances for discovering unique haplotypes, do not use identities!
   3. Go through list of unique haplos and record changes to reflib2. The rules for collapsing unique haplotypes are: maximum of three entries for each unique haplotype per species. When a haplotype is shared between 2 or more species, record those species and form a group. Name group and change accession number to group initials (2), followed by group number and 4 zeros and individual number. The rest of the header contains the Group Name for Family (i.e. Agonidae1) followed by the group code (i.e. AG1) followed by a unique species identifier that is sequential for all groups (i.e. species1). Each haplotype in a group will have the exact same Family, Genus and Species text to avoid any program error. For example, each entry for Agonidae1 group is AG100001_Agonidae1_AG1_species1, AG100002_Agonidae1_AG1_species1, and AG100003_Agonidae1_AG1_species1.
@@ -103,7 +103,7 @@ The final list of marine species in Canada was comprised of the list from Brian 
   5. Groups with 2 or more species and/or genera are potential Genbank misidentifications. 
   6. Parse all entries per group's Family in reflib2, create phylogeny in R, and inspect. (NB. do not used collapsed library to parse Family entries).
 
-[**Calculate 95% cut-off value of intraspecific distances and generate list of GenBank accession numbers greater than cut-off.](#step6)
+**Calculate 95% cut-off value of intraspecific distances and generate list of GenBank accession numbers greater than cut-off.** <a name="step6"/>
 1. Generate list of unique species from reflib3 using sed and excel
 2. Parse reflib3 for each species and create one new file for each species using awk.
 3. Align each species file separately using mafft.
@@ -113,7 +113,7 @@ The final list of marine species in Canada was comprised of the list from Brian 
 a. Calculate the average sd using the formula: Average S.D. = √ ((n1-1)s12 +  (n2-1)s22 + … +  (nk-1)sk2) /  (n1+n2 + … + nk – k) where nk: Sample size for kth group, sk: Standard deviation for kth group, and k: Total number of groups
 6. Highlight each species with a max value greater than the 95% cut-off and generate a Family phylogeny.
 
-[**Visually inspect potential GenBank ID errors using phylogenetic trees and remove entries from reference library.](#step7)
+**Visually inspect potential GenBank ID errors using phylogenetic trees and remove entries from reference library.** <a name="step7"/>
 
 For each species that was identified outside of the range, a NJ tree for all sequences within the Family was generated and individual pairwise distance matrices were examined. Obvious outliers were identified as (1) single Genbank entries that were placed outside of a monophyletic species clade, (2) single Genbank entries that had genetic distances with all other conspecifics above the cutoff. In these cases, the single Genbank entry for that species was removed. Once removed, each species fell within the 95% confidence interval. Less obvious outliers occurred in species with large distributions that may represent phylogeographic variation. The entire species was removed in these cases as we could not reasonably assume the cause of high intraspecific distance for any specific Genbank record. 
 
