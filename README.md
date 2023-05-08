@@ -42,10 +42,10 @@ They are formatted for use with the FuzzyID2 software package for taxonomic assi
 
 Specific methods for reference library construction under numbered headings of general steps above.
 
-[**Determine species list**](#step1) 
+**Determine species list** <a name="step1"/> 
 The final list of marine species in Canada was comprised of the list from Brian Coad's website and observations from OBIS for Canadian waters. This list totals 1543 species in Actinopterygii and is available as ‘Coad_OBIS_fish_list_Canada.csv’.
 
-[**Gather Genbank entries using NCBI E-Utilities**](#step2)
+**Gather Genbank entries using NCBI E-Utilities** <a name="step2"/>
   1. esearch and efetch species names and gene names according to list 
       - Download genbank formatted files. Do not download RefSeq entries as these are duplicates.
   2. esearch and efetch alternate naming schemes (e.g., small/large ribosomal sub-unit) for each species and append to existing files. Same as above.
