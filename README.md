@@ -19,7 +19,7 @@ They are formatted for use with the FuzzyID2 software package for taxonomic assi
 
 
 ## File Descriptions:
-1. **12S_reference_library_Actinopterygii.fasta**: is a fasta formatted file with headers formatted for use with FuzzyID2 softwarein the format of GBaccession_Family_Genus_Species. *Note that original Genbank Accession numbers are maintained with the exceptions detailed for shared haplotypes between species.
+1. **12S_reference_library_Actinopterygii.fasta**: is a fasta formatted file with headers formatted for use with FuzzyID2 software in the format of GBaccession_Family_Genus_Species. *Note that original Genbank Accession numbers are maintained with the exceptions detailed for shared haplotypes between species.
 
 2. **12S_haplogroups_list.csv**: is a csv formatted file containing the list of haplotypes shared between species and genera. The header is formatted as (1) accession number change to group initials (2), followed by group number and 4 zeros and individual number. The rest of the header contains the Group Name for Family (i.e. Agonidae1) followed by the group code (i.e. AG1) followed by a unique species identifier that is sequential for all groups (i.e. species1). Each haplotype in a group will have the exact same Family, Genus and Species text to avoid any program error. For example, each entry for Agonidae1 group is AG100001_Agonidae1_AG1_species1, AG100002_Agonidae1_AG1_species1, and AG100003_Agonidae1_AG1_species1.
 
@@ -43,7 +43,8 @@ They are formatted for use with the FuzzyID2 software package for taxonomic assi
 Specific methods for reference library construction under numbered headings of general steps above.
 
 **Determine species list** <a name="step1"/> 
-The final list of marine species in Canada was comprised of the list from Brian Coad's website and observations from OBIS for Canadian waters. This list totals 1543 species in Actinopterygii and is available as ‘Coad_OBIS_fish_list_Canada.csv’.
+
+The final list of marine species in Canada was comprised of the list from Brian Coad's [website](http://www.briancoad.com/main.asp?page=whatsnew.asp) and observations from [OBIS](https://obis.org/) for Canadian waters. This list totals 1543 species in Actinopterygii and is available as [**Coad_OBIS_fish_list_Canada.csv**](https://github.com/dfo-mar-mpas/can_marinefish_ref/blob/main/data/Coad_OBIS_fish_list_Canada.csv).
 
 **Gather Genbank entries using NCBI E-Utilities** <a name="step2"/>
   1. esearch and efetch species names and gene names according to list 
