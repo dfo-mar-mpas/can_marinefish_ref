@@ -32,20 +32,20 @@ They are formatted for use with the FuzzyID2 software package for taxonomic assi
 
 ## The general overview of reference library construction
 
-    1. Determine species list for _Actinopterygii_ for Canadian marine waters in Atlantic and Pacific Oceans.
-    2. Gather GenBank entries for genes and species of choice.
-    3. Perform in silico PCR on all entries -> reflib1.
-    4. Determine which entries failed in silico PCR and manually align + reflib1 -> reflib2.
-    5. Identify unique haplotypes and collapse entries + reflib2 -> reflib3.
-    6. Calculate 95% confidence intervals of intraspecific distances and generate list of GenBank accession numbers greater than cut-off.
-    7. Visually inspect potential GenBank ID errors using phylogenetic trees and remove entries from reference library + reflib3 -> reflib4.
+  1. [Determine species list for _Actinopterygii_ for Canadian marine waters in Atlantic and Pacific Oceans.](#step1)
+  2. [Gather GenBank entries for genes and species of choice.](#step2)
+  3. [Perform in silico PCR on all entries -> reflib1.](#step3)
+  4. [Determine which entries failed in silico PCR and manually align + reflib1 -> reflib2.](#step4)
+  5. [Identify unique haplotypes and collapse entries + reflib2 -> reflib3.](#step5)
+  6. [Calculate 95% confidence intervals of intraspecific distances and generate list of GenBank accession numbers greater than cut-off.](#step6)
+  7. [Visually inspect potential GenBank ID errors using phylogenetic trees and remove entries from reference library + reflib3 -> reflib4.](#step7)
 
 Specific methods for reference library construction under numbered headings of general steps above.
 
-**Determine species list**
+[**Determine species list**](#step1) 
 The final list of marine species in Canada was comprised of the list from Brian Coad's website and observations from OBIS for Canadian waters. This list totals 1543 species in Actinopterygii and is available as ‘Coad_OBIS_fish_list_Canada.csv’.
 
-**Gather Genbank entries using NCBI E-Utilities**
+[**Gather Genbank entries using NCBI E-Utilities**](#step2)
   1. esearch and efetch species names and gene names according to list 
       - Download genbank formatted files. Do not download RefSeq entries as these are duplicates.
   2. esearch and efetch alternate naming schemes (e.g., small/large ribosomal sub-unit) for each species and append to existing files. Same as above.
@@ -54,7 +54,7 @@ The final list of marine species in Canada was comprised of the list from Brian 
   4. cat all files into single genbank formatted file and proceed with stage 2.
       - cat *.gb > all.gb
 
-**Perform in _silico_ PCR**
+[**Perform in _silico_ PCR**](#step3)
   1. Convert to obitools database
       - obiconvert -d /home/kristen/Documents/ncbi20201008/ --ecopcrdb-output=16S.db /home/kristen/Documents/barcoding_gap/16S_species/REFLIB_PIPELINE/species_gb/all.gb
   2. Run ecoPCR for specific primers with the following flags (e.g. 16S given)
@@ -62,7 +62,7 @@ The final list of marine species in Canada was comprised of the list from Brian 
   3. Remove first 13 lines of output file. 
   4. Reformat into FuzzyID2 reference library fasta format -> reflib1
 
-**Determine which entries failed _in silico_ PCR**
+[**Determine which entries failed _in silico_ PCR**](#step4)
   1. work from file in reflib directory.
   2. obtain list of gb accession numbers in reflib1 
       - sed -n '/^>/p' 16S_reflib1.fasta > accession_list_reflib1.txt
@@ -95,26 +95,27 @@ The final list of marine species in Canada was comprised of the list from Brian 
       - remove short sequences, those sequences that are obviously cut-off and not natural length variation. If there are conspecifics with much larger sequences then remove the entry with the sequence that was cut off.
 
 
-**Identify unique haplotypes and collapse entries** 
-1.	Align reflib2_Acitnopterygii using mafft and load into R.
-2.	Execute steps in reflib2haplos.R **Use genetic distances for discovering unique haplotypes, do not use identities!
-3.	Go through list of unique haplos and record changes to reflib2. The rules for collapsing unique haplotypes are: maximum of three entries for each unique haplotype per species. When a haplotype is shared between 2 or more species, record those species and form a group. Name group and change accession number to group initials (2), followed by group number and 4 zeros and individual number. The rest of the header contains the Group Name for Family (i.e. Agonidae1) followed by the group code (i.e. AG1) followed by a unique species identifier that is sequential for all groups (i.e. species1). Each haplotype in a group will have the exact same Family, Genus and Species text to avoid any program error. For example, each entry for Agonidae1 group is AG100001_Agonidae1_AG1_species1, AG100002_Agonidae1_AG1_species1, and AG100003_Agonidae1_AG1_species1.
-4.	Integrate new header file into edited reflib2 -> save as reflib3.
-5.	Groups with 2 or more species and/or genera are potential Genbank misidentifications. 
-6.	Parse all entries per group's Family in reflib2, create phylogeny in R, and inspect. (NB. do not used collapsed library to parse Family entries).
+[**Identify unique haplotypes and collapse entries**](step5)
+  1. Align reflib2_Acitnopterygii using mafft and load into R.
+  2. Execute steps in reflib2haplos.R **Use genetic distances for discovering unique haplotypes, do not use identities!
+  3. Go through list of unique haplos and record changes to reflib2. The rules for collapsing unique haplotypes are: maximum of three entries for each unique haplotype per species. When a haplotype is shared between 2 or more species, record those species and form a group. Name group and change accession number to group initials (2), followed by group number and 4 zeros and individual number. The rest of the header contains the Group Name for Family (i.e. Agonidae1) followed by the group code (i.e. AG1) followed by a unique species identifier that is sequential for all groups (i.e. species1). Each haplotype in a group will have the exact same Family, Genus and Species text to avoid any program error. For example, each entry for Agonidae1 group is AG100001_Agonidae1_AG1_species1, AG100002_Agonidae1_AG1_species1, and AG100003_Agonidae1_AG1_species1.
+  4. Integrate new header file into edited reflib2 -> save as reflib3.
+  5. Groups with 2 or more species and/or genera are potential Genbank misidentifications. 
+  6. Parse all entries per group's Family in reflib2, create phylogeny in R, and inspect. (NB. do not used collapsed library to parse Family entries).
 
-
-6. Calculate 95% cut-off value of intraspecific distances and generate list of GenBank accession numbers greater than cut-off
-1.	Generate list of unique species from reflib3 using sed and excel
-2.	Parse reflib3 for each species and create one new file for each species using awk.
-3.	Align each species file separately using mafft.
-4.	Analyze each aligned species file in R, calculating intraspecific K2P distances min, mean, max, and stdev. Write to file.
-5.	Calculate the grand mean of means and the average sd. Calculate 95% cut-off as 4.5 average sd* of grand mean. 
+[**Calculate 95% cut-off value of intraspecific distances and generate list of GenBank accession numbers greater than cut-off.](#step6)
+1. Generate list of unique species from reflib3 using sed and excel
+2. Parse reflib3 for each species and create one new file for each species using awk.
+3. Align each species file separately using mafft.
+4. Analyze each aligned species file in R, calculating intraspecific K2P distances min, mean, max, and stdev. Write to file.
+5. Calculate the grand mean of means and the average sd. Calculate 95% cut-off as 4.5 average sd* of grand mean. 
 (*Chebyshev’s inequality was used to determine the 95% confidence interval as the distribution of average pairwise intraspecific variation was heavily skewed towards zero).
-a.	Calculate the average sd using the formula: Average S.D. = √ ((n1-1)s12 +  (n2-1)s22 + … +  (nk-1)sk2) /  (n1+n2 + … + nk – k) where nk: Sample size for kth group, sk: Standard deviation for kth group, and k: Total number of groups
-6.	Highlight each species with a max value greater than the 95% cut-off and generate a Family phylogeny.
+a. Calculate the average sd using the formula: Average S.D. = √ ((n1-1)s12 +  (n2-1)s22 + … +  (nk-1)sk2) /  (n1+n2 + … + nk – k) where nk: Sample size for kth group, sk: Standard deviation for kth group, and k: Total number of groups
+6. Highlight each species with a max value greater than the 95% cut-off and generate a Family phylogeny.
 
-7. Visually inspect potential GenBank ID errors using phylogenetic trees and remove entries from reference library.
+[**Visually inspect potential GenBank ID errors using phylogenetic trees and remove entries from reference library.](#step7)
+
 For each species that was identified outside of the range, a NJ tree for all sequences within the Family was generated and individual pairwise distance matrices were examined. Obvious outliers were identified as (1) single Genbank entries that were placed outside of a monophyletic species clade, (2) single Genbank entries that had genetic distances with all other conspecifics above the cutoff. In these cases, the single Genbank entry for that species was removed. Once removed, each species fell within the 95% confidence interval. Less obvious outliers occurred in species with large distributions that may represent phylogeographic variation. The entire species was removed in these cases as we could not reasonably assume the cause of high intraspecific distance for any specific Genbank record. 
+
 Unique haplotypes that were shared among species, genera, and families were also examined. All haplotypes shared among families were examined for outliers, which were obvious in all cases and those entries removed so each unique haplotype was shared at or below the genus level. Most cases where haplotypes were shared among species or genera were treated as groups where species level could not be resolved. This approach was favoured over including all species in an overall genus group as haplotype sharing only applied to a subset of species within a genus, offering the infest level of taxonomic assignment possible. 
 
