@@ -76,11 +76,11 @@ The final list of marine species in Canada was comprised of the list from Brian 
   6.	Make reflib1 into a blast database and blast the extra sequences.
   7.	Steps to make reflib1 into database.
       
-      - extract species names from each entry in reflib1 and look up taxids at website by [file](https://www.ncbi.nlm.nih.gov/Taxonomy/TaxIdentifier/tax_identifier.cgi) 
-      - truncate headers in reflib1 to 50 characters
-      - merge the reflib1 truncated header file with the taxid file to create a taxid map for making the local blast db
-      - makeblastdb -in 16S_reflib1_headertrunc50.fasta -parse_seqids -blastdb_version 5 -taxid_map 16S_taxid_map.csv -title "16Sreflib1" -dbtype nt
-      - blast the remaining sequences to reflib1 to see which sequences are a potential match, output is a list of query accession numbers that had a match.
+    - extract species names from each entry in reflib1 and look up taxids at website by [file](https://www.ncbi.nlm.nih.gov/Taxonomy/TaxIdentifier/tax_identifier.cgi) 
+    - truncate headers in reflib1 to 50 characters
+    - merge the reflib1 truncated header file with the taxid file to create a taxid map for making the local blast db
+    - makeblastdb -in 16S_reflib1_headertrunc50.fasta -parse_seqids -blastdb_version 5 -taxid_map 16S_taxid_map.csv -title "16Sreflib1" -dbtype nt
+    - blast the remaining sequences to reflib1 to see which sequences are a potential match, output is a list of query accession numbers that had a match.
       - blastn -db 16S_reflib1_headertrunc50.fasta -query not_ecopcr_oneliner2.fasta -evalue 1e-6 -outfmt '6 qseqid' -max_target_seqs 1 > blast_out.txt.
   8. Take output and acquire the full header and sequence from the original query file not_ecopcr_oneliner2.fasta using awk batch cmd.
   9. Separate output into batches and align manually.
