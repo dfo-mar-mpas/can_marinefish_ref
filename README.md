@@ -110,7 +110,7 @@ The final list of marine species in Canada was comprised of the list from Brian 
 4. Analyze each aligned species file in R, calculating intraspecific K2P distances min, mean, max, and stdev. Write to file.
 5. Calculate the grand mean of means and the average sd. Calculate 95% cut-off as 4.5 average sd* of grand mean. 
 (*Chebyshev’s inequality was used to determine the 95% confidence interval as the distribution of average pairwise intraspecific variation was heavily skewed towards zero).
-a. Calculate the average sd using the formula: Average S.D. = √ ((n1-1)s12 +  (n2-1)s22 + … +  (nk-1)sk2) /  (n1+n2 + … + nk – k) where nk: Sample size for kth group, sk: Standard deviation for kth group, and k: Total number of groups
+a. Calculate the average sd using the formula: Average S.D. = √ ((n1-1)s<sub>1</sub><sup>2</sup> +  (n<sub>2</sub>-1)s<sub>2</sub><sup>k</sup> + … +  (n<sub>k</sub>-1)s<sub>k</sub><sup>2</sup>) /  (n<sub>1</sub>+n<sub>2</sub> + … + n<sub>k</sub> – k) where nk: Sample size for kth group, sk: Standard deviation for kth group, and k: Total number of groups
 6. Highlight each species with a max value greater than the 95% cut-off and generate a Family phylogeny.
 
 **Visually inspect potential GenBank ID errors using phylogenetic trees and remove entries from reference library.** <a name="step7"/>
