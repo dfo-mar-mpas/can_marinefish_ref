@@ -2,27 +2,22 @@
 <img src="inst/hexlogo-01.png" align="left" width="200px"/>
 Environmental DNA reference database for Canadian Marine Fish species using 12s and 16s genes.
 
-Here are two custom DNA reference libraries for marine fish (_Actinopterygii_ only) in Canada (Pacific and Atlantic Oceans) for the 12S and 16S amplicons described in [He et al., 2022](https://cdnsciencepub.com/doi/10.1139/cjfas-2021-0215). These are reference libraries specifically constructed for amplicons of the following markers:
+Here are two custom DNA reference libraries for marine fish (_Actinopterygii_ only) in Canada (Pacific and Atlantic Oceans) for the 12S and 16S amplicons described in [He et al., 2022](https://cdnsciencepub.com/doi/10.1139/cjfas-2021-0215). 
 
 <br clear="left"/>
 
-1.	12S modified MiFish (Miya et al., 2015). 
-    Forward primer = 5’- CGTGCCAGCCACCGCGGTT -3’ 
-    Reverse primer = 5’- CATAGTGGGGTATCTAATCCCAGTTTG -3’ 
+These are reference libraries specifically constructed for amplicons of the following markers:
 
-2.	16S Fish (McInnes et al., 2017). 
-    Forward primer = 5’- AGCGYAATCACTTGTCTYTTAA -3’ 
-    Reverse primer = 5’- CRBGGTCGCCCCAACCRAA -3’
+1.	12S modified MiFish ([Miya et al., 2015](https://royalsocietypublishing.org/doi/10.1098/rsos.150088)). 
+    Forward primer = 5’- **CGTGCCAGCCACCGCGGTT** -3’ 
+    Reverse primer = 5’- **CATAGTGGGGTATCTAATCCCAGTTTG** -3’ 
+
+2.	16S Fish ([McInnes et al., 2017](https://www.frontiersin.org/articles/10.3389/fmars.2017.00277/full)). 
+    Forward primer = 5’- **AGCGYAATCACTTGTCTYTTAA** -3’ 
+    Reverse primer = 5’- **CRBGGTCGCCCCAACCRAA** -3’
     
-They are formatted for use with the FuzzyID2 software package for taxonomic assignment (She et al., 2018).
+They are formatted for use with the FuzzyID2 software package for taxonomic assignment ([Shi et al., 2018](https://onlinelibrary.wiley.com/doi/10.1111/1755-0998.12738)).
 
-  * [He, X., Stanley, R., Rubidge, E., Jeffrey, N., Hamilton, L., Westfall, K.M., Gilmore, S., Roux, L-M., Gale, K., Heaslip, S., Abbott, C. 2022. Fish community surveys in eelgrass beds using both eDNA metabarcoding and seining: implications for biodiversity monitoring in the coastal zone. Canadian Journal of Fisheries and Aquatic Sciences, DOI: 10.1139/cjfas-2021-0215](https://cdnsciencepub.com/doi/10.1139/cjfas-2021-0215)
-
-  * [McInnes J.C., Jarman S.N., Lea M.-A., Raymond B., Deagle B.E., Phillips R.A., et al. 2017. DNA metabarcoding as a marine conservation and management tool: a circumpolar examination of fishery discards in the diet of threatened albatrosses. Front. Mar. Sci. 4: 277.](https://www.frontiersin.org/articles/10.3389/fmars.2017.00277/full)
-
-  * [Miya M., Sato Y., Fukunaga T., Sado T., Poulsen J.Y., Sato K., et al. 2015. MiFish, a set of universal PCR primers for metabarcoding environmental DNA from fishes: detection of more than 230 subtropical marine species. R Soc. Open Sci. 2(7): 150088.](https://royalsocietypublishing.org/doi/10.1098/rsos.150088)
-
-  * [Shi Z.-Y., Yang C.-Q., Hao M., Wang X.-Y., Ward R.D., and Zhang A.-B. 2018. FuzzyID2: A software package for large data set species identification via barcoding and metabarcoding using hidden Markov models and fuzzy set methods. Mol. Ecol. Resour. 18(3): 666–675.](https://onlinelibrary.wiley.com/doi/10.1111/1755-0998.12738)
 
 ## File Descriptions:
 1. **12S_reference_library_Actinopterygii.fasta**: is a fasta formatted file with headers formatted for use with FuzzyID2 softwarein the format of GBaccession_Family_Genus_Species. *Note that original Genbank Accession numbers are maintained with the exceptions detailed for shared haplotypes between species.
