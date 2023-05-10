@@ -47,7 +47,7 @@ Specific methods for reference library construction under numbered headings of g
 The final list of marine species in Canada was comprised of the list derived from [OBIS](https://obis.org/) observations from within Canada and supplemented by a list of Canadian marine fish species compiled by Ichthyologist Brian Coad [website](http://www.briancoad.com/main.asp?page=whatsnew.asp). This list totals 1543 species in Actinopterygii and is available as [**Coad_OBIS_fish_list_Canada.csv**](https://github.com/dfo-mar-mpas/can_marinefish_ref/blob/main/data/Coad_OBIS_fish_list_Canada.csv).
 
 **Gather Genbank entries using NCBI E-Utilities** <a name="step2"/>
-  1. esearch and efetch species names and gene names according to list 
+  1. esearch and _efetch_ species names and gene names according to list 
       - Download genbank formatted files. Do not download RefSeq entries as these are duplicates.
   2. esearch and efetch alternate naming schemes (e.g., small/large ribosomal sub-unit) for each species and append to existing files. Same as above.
   3. remove all files with zero size.
