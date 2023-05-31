@@ -56,13 +56,13 @@ The final list of marine species in Canada was comprised of the list derived fro
 **3. Perform in _silico_ PCR** <a name="step3"/>
 
   3.1 Convert to obitools database.<br>
-  3.2 Run ecoPCR for specific primers.<br>
+  3.2 Run ecoPCR for specific primers.[](#step3_2)<br>
   3.3 Remove first 13 lines of output file. <br>
   3.4 Reformat into FuzzyID2 reference library fasta format.<br>
 
 **4. Determine which entries failed _in silico_ PCR** <a name="step4"/>
 
-  4.1	Obtain list of gb accession numbers in concatenated file from step 3.2.<br>
+  4.1	Obtain list of gb accession numbers in concatenated file from step 3.2 <a name="step2"/>.<br>
   4.2	Obtain list of gb accession numbers in all GenBank downloaded sequences (step 2.3) <br>
   4.3	Determine which accession numbers were cut by in silico PCR.<br>
   4.4	Use list of accession numbers in ‘esearch’ and ‘efetch’ commands to download fasta format.<br>
@@ -79,9 +79,11 @@ The final list of marine species in Canada was comprised of the list derived fro
 5.1	Align sequence file from step 4.9.<br> 
 5.2 Use R package ‘haplotypes’ to discover unique haplotypes. Make sure to use raw genetic distances instead of identities.<br> 
 5.3	Go through list of unique haplotypes and remove duplicates in the file obtained from step 4.9 using the following rules:<br> 
+<br>
    5.3.1	 maximum of three entries for each unique haplotype per species.<br> 
    5.3.2	 When a haplotype is shared between 2 or more species, record those species and form a group.<br> 
    5.3.3	 Name group and change accession number to group initials (2), followed by group number and 4 zeros and individual number. The rest of the header contains the Group Name for Family (i.e. Agonidae1) followed by the group code (i.e., AG1) followed by a unique species identifier that is sequential for all groups (i.e. species1). Each haplotype in a group will have the exact same Family, Genus and Species text to avoid any program error. For example, each entry for Agonidae1 group is AG100001_Agonidae1_AG1_species1, AG100002_Agonidae1_AG1_species1, and AG100003_Agonidae1_AG1_species1.<br> 
+<br>
 5.4	All groups are potential GenBank errors, especially if they contain more than one genus or higher.<br> 
 5.5	Parse all entries per group's Family in file from step 4.9 (removing obvious large numbers of sequence duplicates to make tree readable), create phylogeny in R.<br> 
 5.6	Inspect and remove all species that are obvious errors.<br> 
