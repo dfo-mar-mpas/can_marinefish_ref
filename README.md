@@ -21,9 +21,9 @@ They are formatted for use with the FuzzyID2 software package for taxonomic assi
 ## File Descriptions:
 1. **12S_reference_library_Actinopterygii.fasta**: is a fasta formatted file with headers formatted for use with FuzzyID2 software in the format of GBaccession_Family_Genus_Species. *Note that original Genbank Accession numbers are maintained with the exceptions detailed for shared haplotypes between species.
 
-2. **12S_haplogroups_list.csv**: is a csv formatted file containing the list of haplotypes shared between species and genera. The header is formatted as (1) accession number change to group initials (2), followed by group number and 4 zeros and individual number. The rest of the header contains the Group Name for Family (i.e. Agonidae1) followed by the group code (i.e. AG1) followed by a unique species identifier that is sequential for all groups (i.e. species1). Each haplotype in a group will have the exact same Family, Genus and Species text to avoid any program error. For example, each entry for Agonidae1 group is AG100001_Agonidae1_AG1_species1, AG100002_Agonidae1_AG1_species1, and AG100003_Agonidae1_AG1_species1.
+2. **12S_haplogroups_list.csv**: is a csv formatted file containing the list of haplotypes shared between species and genera. The header is formatted as (1) accession number change to group initials (2), followed by group number and 4 zeros and individual number. The rest of the header contains the Group Name for Family (i.e., Agonidae1) followed by the group code (i.e., AG1) followed by a unique species identifier that is sequential for all groups (i.e., species1). Each haplotype in a group will have the exact same Family, Genus and Species text to avoid any program error. For example, each entry for Agonidae1 group is AG100001_Agonidae1_AG1_species1, AG100002_Agonidae1_AG1_species1, and AG100003_Agonidae1_AG1_species1.
 
-3. **16S_reference_library_Actinopterygii.fasta**: is a fasta formatted file with headers formatted for use with FuzzyID2 softwarein the format of GBaccession_Family_Genus_Species. *Note that original Genbank Accession numbers are maintained with the exceptions detailed for shared haplotypes between species.
+3. **16S_reference_library_Actinopterygii.fasta**: is a fasta formatted file with headers formatted for use with FuzzyID2 software in the format of GBaccession_Family_Genus_Species. *Note that original Genbank Accession numbers are maintained with the exceptions detailed for shared haplotypes between species.
 
 4. **16S_haplogroups_list.csv**: is a csv formatted file containing the list of haplotypes shared between species and genera. The header is formatted as (1) accession number change to group initials (2), followed by group number and 4 zeros and individual number. The rest of the header contains the Group Name for Family (i.e. Agonidae1) followed by the group code (i.e. AG1) followed by a unique species identifier that is sequential for all groups (i.e. species1). Each haplotype in a group will have the exact same Family, Genus and Species text to avoid any program error. For example, each entry for Agonidae1 group is AG100001_Agonidae1_AG1_species1, AG100002_Agonidae1_AG1_species1, and AG100003_Agonidae1_AG1_species1.
 
@@ -42,18 +42,16 @@ They are formatted for use with the FuzzyID2 software package for taxonomic assi
 
 Specific methods for reference library construction under numbered headings of general steps above.
 
-**Determine species list** <a name="step1"/> 
+**1. Determine species list** <a name="step1"/> 
 
 The final list of marine species in Canada was comprised of the list derived from [OBIS](https://obis.org/) observations from within Canada and supplemented by a list of Canadian marine fish species compiled by Ichthyologist Brian Coad [website](http://www.briancoad.com/main.asp?page=whatsnew.asp). This list totals 1543 species in Actinopterygii and is available as [**Coad_OBIS_fish_list_Canada.csv**](https://github.com/dfo-mar-mpas/can_marinefish_ref/blob/main/data/Coad_OBIS_fish_list_Canada.csv).
 
-**Gather Genbank entries using NCBI E-Utilities** <a name="step2"/>
-  1. esearch and efetch species names and gene names according to list 
-      - Download genbank formatted files. Do not download RefSeq entries as these are duplicates.
-  2. esearch and efetch alternate naming schemes (e.g., small/large ribosomal sub-unit) for each species and append to existing files. Same as above.
-  3. remove all files with zero size.
-      - find . -size  0 -print -delete
-  4. cat all files into single genbank formatted file and proceed with stage 2.
-      - cat *.gb > all.gb
+**2. Gather Genbank entries using NCBI E-Utilities** <a name="step2"/>
+
+  2.1 _‘esearch’_ and _‘efetch’_ species names and gene names according to list. Include or do separate searches for alternate naming schemes (e.g., small/large ribosomal sub-unit). Specify GenBank format for downloads and do not download RefSeq entries as these are duplicates.
+  2.2 Note missing species by looking at files with zero size.
+  2.3 Concatenate all files into single GenBank formatted file.
+
 
 **Perform in _silico_ PCR** <a name="step3"/>
   1. Convert to obitools database
