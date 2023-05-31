@@ -39,13 +39,13 @@ They are formatted for use with the FuzzyID2 software package for taxonomic assi
 
 ## The general overview of reference library construction
 
-  **Step 1.** [Determine species list for Actinopterygii for Canadian marine waters in Atlantic and Pacific Oceans.](#step1)<br>
-  **Step 2.** [Gather GenBank entries for genes and species of choice.](#step2)<br>
-  **Step 3.** [Perform in silico PCR on all entries.](#step3)<br>
-  **Step 4.** [Manually align entries that failed in silico PCR in **Step 2**.](#step4)<br>
-  **Step 5.** [Identify unique haplotypes and collapse entries.](#step5)<br>
-  **Step 6.** [Calculate 95% confidence intervals of intraspecific distances and generate list of GenBank accession numbers greater than the interval.](#step6)<br>
-  **Step 7.** [Visually inspect potential GenBank ID errors identified in Step 6 using Family level phylogenetic trees and remove entries from reference library.](#step7)<br>
+  &emsp;**Step 1.** [Determine species list for Actinopterygii for Canadian marine waters in Atlantic and Pacific Oceans.](#step1)<br>
+  &emsp;**Step 2.** [Gather GenBank entries for genes and species of choice.](#step2)<br>
+  &emsp;**Step 3.** [Perform in silico PCR on all entries.](#step3)<br>
+  &emsp;**Step 4.** [Manually align entries that failed in silico PCR in **Step 2**.](#step4)<br>
+  &emsp;**Step 5.** [Identify unique haplotypes and collapse entries.](#step5)<br>
+  &emsp;**Step 6.** [Calculate 95% confidence intervals of intraspecific distances and generate list of GenBank accession numbers greater than the interval.](#step6)<br>
+  &emsp;**Step 7.** [Visually inspect potential GenBank ID errors identified in Step 6 using Family level phylogenetic trees and remove entries from reference library.](#step7)<br>
 
 Specific methods for reference library construction under numbered headings of general steps above.
 
