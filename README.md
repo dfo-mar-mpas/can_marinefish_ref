@@ -49,6 +49,8 @@ They are formatted for use with the FuzzyID2 software package for taxonomic assi
 
 Specific methods for reference library construction under numbered headings of general steps above.
 
+***
+
 **Step 1. Determine species list** <a name="step1"/> 
 
 The final list of marine species in Canada was comprised of the list derived from [OBIS](https://obis.org/) observations from within Canada and supplemented by a list of Canadian marine fish species compiled by Ichthyologist Brian Coad [website](http://www.briancoad.com/main.asp?page=whatsnew.asp). This list totals 1543 species in Actinopterygii and is available as [**Coad_OBIS_fish_list_Canada.csv**](https://github.com/dfo-mar-mpas/can_marinefish_ref/blob/main/data/Coad_OBIS_fish_list_Canada.csv).
