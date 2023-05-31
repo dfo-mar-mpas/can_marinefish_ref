@@ -49,25 +49,25 @@ They are formatted for use with the FuzzyID2 software package for taxonomic assi
 
 Specific methods for reference library construction under numbered headings of general steps above.
 
-**1. Determine species list** <a name="step1"/> 
+**Step 1. Determine species list** <a name="step1"/> 
 
 The final list of marine species in Canada was comprised of the list derived from [OBIS](https://obis.org/) observations from within Canada and supplemented by a list of Canadian marine fish species compiled by Ichthyologist Brian Coad [website](http://www.briancoad.com/main.asp?page=whatsnew.asp). This list totals 1543 species in Actinopterygii and is available as [**Coad_OBIS_fish_list_Canada.csv**](https://github.com/dfo-mar-mpas/can_marinefish_ref/blob/main/data/Coad_OBIS_fish_list_Canada.csv).
 
-**2. Gather Genbank entries using NCBI E-Utilities** <a name="step2"/>
+**Step 2. Gather Genbank entries using NCBI E-Utilities** <a name="step2"/>
 
   **2.1** _‘esearch’_ and _‘efetch’_ species names and gene names according to list. Include or do separate searches for alternate naming schemes (e.g., small/large ribosomal sub-unit). Specify GenBank format for downloads and do not download RefSeq entries as these are duplicates.<br>
   **2.2** Note missing species by looking at files with zero size.<br>
   **2.3** Concatenate all files into single GenBank formatted file.<a name="step2-3"/> <br>
 
 
-**3. Perform in _silico_ PCR** <a name="step3"/>
+**Step 3. Perform in _silico_ PCR** <a name="step3"/>
 
   **3.1** Convert to obitools database.<br>
   **3.2** Run ecoPCR for specific primers.<a name="step3-2"/> <br>
   **3.3** Remove first 13 lines of output file. <br>
   **3.4** Reformat into FuzzyID2 reference library fasta format.<a name="step3-4"/> <br>
 
-**4. Determine which entries failed _in silico_ PCR** <a name="step4"/>
+**Step 4. Determine which entries failed _in silico_ PCR** <a name="step4"/>
 
   **4.1**	Obtain list of gb accession numbers in concatenated file from [**step 3.2**](#step3-2).<br>
   **4.2**	Obtain list of gb accession numbers in all GenBank downloaded sequences [(**step 2.3**)](#step2-3) <br>
@@ -81,7 +81,7 @@ The final list of marine species in Canada was comprised of the list derived fro
 
 
 
-**5. Identify unique haplotypes and collapse entries** <a name="step5"/>
+**Step 5. Identify unique haplotypes and collapse entries** <a name="step5"/>
 
 **5.1**	Align sequence file from [**step 4.9**](#step4-9).<br> 
 **5.2** Use R package ‘haplotypes’ to discover unique haplotypes. Make sure to use raw genetic distances instead of identities.<br> 
@@ -96,7 +96,7 @@ The final list of marine species in Canada was comprised of the list derived fro
 **5.6**	Inspect and remove all species that are obvious errors. <a name="step5-6"/> <br> 
 
 
-**6. Calculate 95% cut-off value of intraspecific distances and generate list of GenBank accession numbers greater than cut-off.** <a name="step6"/>
+**Step 6. Calculate 95% cut-off value of intraspecific distances and generate list of GenBank accession numbers greater than cut-off.** <a name="step6"/>
 
 **NOTE:** This step removes potential errors that weren’t caught by the group sharing in Step 5.4. In this step, only species with multiple haplotypes are examined to look at intraspecific variation. Then species with very high intraspecific variation are removed. It is important to note that this may inadvertently remove invasive species that come from very different source populations in the case of multiple incursion events or very cosmopolitan species with large geographic ranges and naturally high levels of intraspecific variation. In the latter situation, if there are many sequences available, remove sequences sourced from geographically distant individuals (e.g., European or Asian populations) if location information is present in the GenBank record. 
 
@@ -111,7 +111,7 @@ The final list of marine species in Canada was comprised of the list derived fro
 <br>where nk: Sample size for kth group, sk: Standard deviation for _kth_ group, and k: Total number of groups
 **6.6** Highlight each species with a max value greater than the 95% cut-off and generate a Family phylogeny.<br>
 
-**7. Visually inspect potential GenBank ID errors using phylogenetic trees and remove entries from reference library.** <a name="step7"/>
+**Step 7. Visually inspect potential GenBank ID errors using phylogenetic trees and remove entries from reference library.** <a name="step7"/>
 
 For each species that was identified outside of the range, a NJ tree for all sequences within the Family was generated and individual pairwise distance matrices were examined. Obvious outliers were identified as (1) single GenBank entries that were placed outside of a monophyletic species clade, (2) single GenBank entries that had genetic distances with all other conspecifics above the cutoff. In these cases, the single GenBank entry for that species was removed. Once removed, if each species fell within the 95% confidence interval, those haplotypes were retained. Less obvious outliers occurred in species with large distributions that may represent phylogeographic variation. The entire species was removed in these cases as we could not reasonably assume the cause of high intraspecific distance for any specific GenBank record. 
 
