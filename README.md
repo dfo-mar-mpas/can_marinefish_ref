@@ -50,7 +50,7 @@ The final list of marine species in Canada was comprised of the list derived fro
 
   2.1 _‘esearch’_ and _‘efetch’_ species names and gene names according to list. Include or do separate searches for alternate naming schemes (e.g., small/large ribosomal sub-unit). Specify GenBank format for downloads and do not download RefSeq entries as these are duplicates.<br>
   2.2 Note missing species by looking at files with zero size.<br>
-  2.3 Concatenate all files into single GenBank formatted file.<br>
+  2.3 Concatenate all files into single GenBank formatted file.<a name="step2-3"/> <br>
 
 
 **3. Perform in _silico_ PCR** <a name="step3"/>
@@ -58,18 +58,18 @@ The final list of marine species in Canada was comprised of the list derived fro
   3.1 Convert to obitools database.<br>
   3.2 Run ecoPCR for specific primers.<a name="step3-2"/> <br>
   3.3 Remove first 13 lines of output file. <br>
-  3.4 Reformat into FuzzyID2 reference library fasta format.<br>
+  3.4 Reformat into FuzzyID2 reference library fasta format.<a name="step3-4"/><br>
 
 **4. Determine which entries failed _in silico_ PCR** <a name="step4"/>
 
-  4.1	Obtain list of gb accession numbers in concatenated file from [step 3.2](#step3_2) .<br>
-  4.2	Obtain list of gb accession numbers in all GenBank downloaded sequences (step 2.3) <br>
+  4.1	Obtain list of gb accession numbers in concatenated file from [step **3.2**](#step3-2).<br>
+  4.2	Obtain list of gb accession numbers in all GenBank downloaded sequences [(step **2.3**)](#step2-3) <br>
   4.3	Determine which accession numbers were cut by in silico PCR.<br>
   4.4	Use list of accession numbers in ‘esearch’ and ‘efetch’ commands to download fasta format.<br>
-  4.5	Format concatenated file from step 2.3 into a blast database and blast the extra sequences (downloaded in step 4.3).<br>
-  4.6	Take output and acquire the full header and sequence from the original query file (step 2.3).<br>
+  4.5	Format concatenated file from [step **2.3**](#step2-3) into a blast database and blast the extra sequences (downloaded in step **4.3**).<br>
+  4.6	Take output and acquire the full header and sequence from the original query file [(step **2.3**)](#step2-3).<br>
   4.7	Separate output into batches and manually align.<br>
-  4.8	Format trimmed sequences for fuzzyid2 and add into file from step 3.4.<br>
+  4.8	Format trimmed sequences for fuzzyid2 and add into file from step [step **3.2**](#step3-4).<br>
   4.9	Remove short sequences that are obviously cut-off and not natural length variation.<br> 
 
 
