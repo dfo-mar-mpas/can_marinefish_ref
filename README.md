@@ -56,13 +56,13 @@ The final list of marine species in Canada was comprised of the list derived fro
 **3. Perform in _silico_ PCR** <a name="step3"/>
 
   3.1 Convert to obitools database.<br>
-  3.2 Run ecoPCR for specific primers.[](#step3_2)<br>
+  3.2 Run ecoPCR for specific primers.<a name="step3-2"/> <br>
   3.3 Remove first 13 lines of output file. <br>
   3.4 Reformat into FuzzyID2 reference library fasta format.<br>
 
 **4. Determine which entries failed _in silico_ PCR** <a name="step4"/>
 
-  4.1	Obtain list of gb accession numbers in concatenated file from step 3.2 <a name="step2"/>.<br>
+  4.1	Obtain list of gb accession numbers in concatenated file from [step 3.2](#step3_2) .<br>
   4.2	Obtain list of gb accession numbers in all GenBank downloaded sequences (step 2.3) <br>
   4.3	Determine which accession numbers were cut by in silico PCR.<br>
   4.4	Use list of accession numbers in ‘esearch’ and ‘efetch’ commands to download fasta format.<br>
