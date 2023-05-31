@@ -102,7 +102,7 @@ The final list of marine species in Canada was comprised of the list derived fro
 
 **NOTE:** This step removes potential errors that weren’t caught by the group sharing in Step 5.4. In this step, only species with multiple haplotypes are examined to look at intraspecific variation. Then species with very high intraspecific variation are removed. It is important to note that this may inadvertently remove invasive species that come from very different source populations in the case of multiple incursion events or very cosmopolitan species with large geographic ranges and naturally high levels of intraspecific variation. In the latter situation, if there are many sequences available, remove sequences sourced from geographically distant individuals (e.g., European or Asian populations) if location information is present in the GenBank record. 
 
-**6.1**	Generate list of unique species/groups from file in [**step 5.6**](#step5-6).<br>
+&emsp;**6.1**	Generate list of unique species/groups from file in [**step 5.6**](#step5-6).<br>
 **6.2**	Parse file from [**step 5.6**](#step5-6) for each species and create one new file for each species.<br>
 **6.3**	Align each species file separately using mafft.<br>
 **6.4**	Analyze each aligned species file in R (package ‘ape’), calculating intraspecific K2P distances min, mean, max, and stdev.<br>
