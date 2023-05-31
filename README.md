@@ -1,11 +1,14 @@
 <img src="inst/hexlogo-01.png" align="left" width="200px"/>
+
 # Environmental DNA reference database for Canadian Marine Fish species using 12s and 16s genes in the Atlantic and Pacific Oceans.
+
+<br clear="left"/>
 
 [![DOI](https://zenodo.org/badge/636343579.svg)](https://zenodo.org/badge/latestdoi/636343579)
 
 Here are two custom DNA reference libraries for marine fish (_Actinopterygii_ only) in Canada (Pacific and Atlantic Oceans) for the 12S and 16S amplicons described in [He et al., 2022](https://cdnsciencepub.com/doi/10.1139/cjfas-2021-0215). 
 
-<br clear="left"/>
+
 
 These are reference libraries specifically constructed for amplicons of the following markers:
 
