@@ -4,7 +4,7 @@
 
 <br clear="left"/>
 
-Here are two custom DNA reference libraries for marine fish (_Actinopterygii_ only) in Canada (Pacific and Atlantic Oceans) for the 12S and 16S amplicons described in [He et al., 2022](https://cdnsciencepub.com/doi/10.1139/cjfas-2021-0215). 
+Here are two custom DNA reference libraries for marine fish (_Actinopterygii_ only) in Canada (Pacific and Atlantic Oceans) for the 12S and 16S amplicons described in [He et al., 2022](#he_ref). 
 
 # **Citation**
 
@@ -14,15 +14,15 @@ Westfall, K.M., Abbot, C., Gilmore, S., He, X., Jeffery, N.J., Rubidge, E.R., an
 
 These are reference libraries specifically constructed for amplicons of the following markers:
 
-1.	12S modified MiFish ([Miya et al., 2015](https://royalsocietypublishing.org/doi/10.1098/rsos.150088)). 
+1.	12S modified MiFish ([Miya et al., 2015](#miya_ref)). 
     Forward primer = 5’- **CGTGCCAGCCACCGCGGTT** -3’ 
     Reverse primer = 5’- **CATAGTGGGGTATCTAATCCCAGTTTG** -3’ 
 
-2.	16S Fish ([McInnes et al., 2017](https://www.frontiersin.org/articles/10.3389/fmars.2017.00277/full)). 
+2.	16S Fish ([McInnes et al., 2017](#mcinnes_ref)). 
     Forward primer = 5’- **AGCGYAATCACTTGTCTYTTAA** -3’ 
     Reverse primer = 5’- **CRBGGTCGCCCCAACCRAA** -3’
     
-They are formatted for use with the FuzzyID2 software package for taxonomic assignment ([Shi et al., 2018](https://onlinelibrary.wiley.com/doi/10.1111/1755-0998.12738)).
+They are formatted for use with the FuzzyID2 software package for taxonomic assignment ([Shi et al., 2018](#shi_ref)).
 
 
 ## File Descriptions:
@@ -120,10 +120,10 @@ Unique haplotypes that were shared among species, genera, and families were also
 
 # **References**
 
-He, X., Stanley, R., Rubidge, E., Jeffrey, N., Hamilton, L., Westfall, K.M., Gilmore, S., Roux, L-M., Gale, K., Heaslip, S., Abbott, C. 2022. Fish community surveys in eelgrass beds using both eDNA metabarcoding and seining: implications for biodiversity monitoring in the coastal zone. Canadian Journal of Fisheries and Aquatic Sciences, DOI: 10.1139/cjfas-2021-0215.
+He, X., Stanley, R., Rubidge, E., Jeffrey, N., Hamilton, L., Westfall, K.M., Gilmore, S., Roux, L-M., Gale, K., Heaslip, S., Abbott, C. 2022. Fish community surveys in eelgrass beds using both eDNA metabarcoding and seining: implications for biodiversity monitoring in the coastal zone. Canadian Journal of Fisheries and Aquatic Sciences, DOI: 10.1139/cjfas-2021-0215.[**link**](https://cdnsciencepub.com/doi/10.1139/cjfas-2021-0215) <a name="he_ref"/>
 
-McInnes J.C., Jarman S.N., Lea M.-A., Raymond B., Deagle B.E., Phillips R.A., et al. 2017. DNA metabarcoding as a marine conservation and management tool: a circumpolar examination of fishery discards in the diet of threatened albatrosses. Front. Mar. Sci. 4: 277.
+McInnes J.C., Jarman S.N., Lea M.-A., Raymond B., Deagle B.E., Phillips R.A., et al. 2017. DNA metabarcoding as a marine conservation and management tool: a circumpolar examination of fishery discards in the diet of threatened albatrosses. Front. Mar. Sci. 4: 277.[**link**](https://www.frontiersin.org/articles/10.3389/fmars.2017.00277/full) <a name="mcinnes_ref"/>
 
-Miya M., Sato Y., Fukunaga T., Sado T., Poulsen J.Y., Sato K., et al. 2015. MiFish, a set of universal PCR primers for metabarcoding environmental DNA from fishes: detection of more than 230 subtropical marine species. R Soc. Open Sci. 2(7): 150088
+Miya M., Sato Y., Fukunaga T., Sado T., Poulsen J.Y., Sato K., et al. 2015. MiFish, a set of universal PCR primers for metabarcoding environmental DNA from fishes: detection of more than 230 subtropical marine species. R Soc. Open Sci. 2(7): 150088 [**link**](https://royalsocietypublishing.org/doi/10.1098/rsos.150088) <a name="miya_ref"/>
 
-Shi Z.-Y., Yang C.-Q., Hao M., Wang X.-Y., Ward R.D., and Zhang A.-B. 2018. FuzzyID2: A software package for large data set species identification via barcoding and metabarcoding using hidden Markov models and fuzzy set methods. Mol. Ecol. Resour. 18(3): 666–675.
+Shi Z.-Y., Yang C.-Q., Hao M., Wang X.-Y., Ward R.D., and Zhang A.-B. 2018. FuzzyID2: A software package for large data set species identification via barcoding and metabarcoding using hidden Markov models and fuzzy set methods. Mol. Ecol. Resour. 18(3): 666–675.[**link**](https://onlinelibrary.wiley.com/doi/10.1111/1755-0998.12738) <a name="shi_ref"/>
