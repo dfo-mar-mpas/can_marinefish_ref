@@ -53,68 +53,56 @@ The final list of marine species in Canada was comprised of the list derived fro
   2.3 Concatenate all files into single GenBank formatted file.<br>
 
 
-**Perform in _silico_ PCR** <a name="step3"/>
-  1. Convert to obitools database
-      - obiconvert -d /home/kristen/Documents/ncbi20201008/ --ecopcrdb-output=16S.db /home/kristen/Documents/barcoding_gap/16S_species/REFLIB_PIPELINE/species_gb/all.gb
-  2. Run ecoPCR for specific primers with the following flags (e.g. 16S given)
-      - ecoPCR -d 16S.db -e 3 -l 100 -L 300 AGCGYAATCACTTGTCTYTTAA CRBGGTCGCCCCAACCRAA > 16S_ecopcr_out_raw.txt
-  3. Remove first 13 lines of output file. 
-  4. Reformat into FuzzyID2 reference library fasta format -> reflib1
+**3. Perform in _silico_ PCR** <a name="step3"/>
 
-**Determine which entries failed _in silico_ PCR** <a name="step4"/>
-  1. work from file in reflib directory.
-  2. obtain list of gb accession numbers in reflib1 
-      - sed -n '/^>/p' 16S_reflib1.fasta > accession_list_reflib1.txt
-      - reformat in excel to just accession numbers, sort in excel.
-  3. Obtain list of gb accession numbers in all.gb (raw gb entries). 
-      - sed -n '/^ACCESSION/p' all.gb > accession_list_all.txt
-      - reformat in excel to just accession numbers, sort in excel.
-  4. Determine which accession numbers were cut by in silico PCR
-      - comm -23 <(sort accession_list_all.csv | uniq) <(sort accession_list_reflib1.csv | uniq) > accession_list_not_ecopcr.txt
-  5. use list of accession numbers in esearch and efetch commands, this time download fasta format.
-  6. Make reflib1 into a blast database and blast the extra sequences.
-  7. Steps to make reflib1 into database:
-      - extract species names from each entry in reflib1 and look up taxids at [website](https://www.ncbi.nlm.nih.gov/Taxonomy/TaxIdentifier/tax_identifier.cgi)
-      - truncate headers in reflib1 to 50 characters
-      merge the reflib1 truncated header file with the taxid file to create a taxid map for making the local blast db
-      - makeblastdb -in 16S_reflib1_headertrunc50.fasta -parse_seqids -blastdb_version 5 -taxid_map 16S_taxid_map.csv -title "16Sreflib1" -dbtype nt
-      - blast the remaining sequences to reflib1 to see which sequences are a potential match, output is a list of query accession numbers that had a match. 
-      -blastn -db 16S_reflib1_headertrunc50.fasta -query not_ecopcr_oneliner2.fasta -evalue 1e-6 -outfmt '6 qseqid' -max_target_seqs 1 > blast_out.txt.
-  8. Take output and acquire the full header and sequence from the original query file not_ecopcr_oneliner2.fasta using awk batch cmd.
-  9. Separate output into batches and align manually.
-  10. Format trimmed sequences for fuzzyid2:
-      - print headers to file
-  sed -n '/^>/p' blast_outpu_all_trimmed.fasta > blast_output_all_headers.txt
-      - delete headers to make a sequence file
-  sed -e '/^>/d' blast_output_all_trimmed.fasta > blast_output_all_trimmed_seq.txt
-      - parse headers in excel to fuzzyid2 format by deleting all information except accession number and species name. Add in column for family name and export to text file
-      - add in new headers to sequences.
-  paste -d \\n blast_output_all_trimmed_formattedheader.txt blast_output_all_trimmed_seq.txt > blast_output_all_formattedfuzzyid2.fasta
-      - add in trimmed sequences to reflib1 -> reflib2.
-      - remove short sequences, those sequences that are obviously cut-off and not natural length variation. If there are conspecifics with much larger sequences then remove the entry with the sequence that was cut off.
+  3.1 Convert to obitools database.<br>
+  3.2 Run ecoPCR for specific primers.<br>
+  3.3 Remove first 13 lines of output file. <br>
+  3.4 Reformat into FuzzyID2 reference library fasta format.<br>
+
+**4. Determine which entries failed _in silico_ PCR** <a name="step4"/>
+
+  4.1	Obtain list of gb accession numbers in concatenated file from step 3.2.<br>
+  4.2	Obtain list of gb accession numbers in all GenBank downloaded sequences (step 2.3) <br>
+  4.3	Determine which accession numbers were cut by in silico PCR.<br>
+  4.4	Use list of accession numbers in ‘esearch’ and ‘efetch’ commands to download fasta format.<br>
+  4.5	Format concatenated file from step 2.3 into a blast database and blast the extra sequences (downloaded in step 4.3).<br>
+  4.6	Take output and acquire the full header and sequence from the original query file (step 2.3).<br>
+  4.7	Separate output into batches and manually align.<br>
+  4.8	Format trimmed sequences for fuzzyid2 and add into file from step 3.4.<br>
+  4.9	Remove short sequences that are obviously cut-off and not natural length variation.<br> 
 
 
-**Identify unique haplotypes and collapse entries** <a name="step5"/>
-  1. Align reflib2_Acitnopterygii using mafft and load into R.
-  2. Execute steps in reflib2haplos.R **Use genetic distances for discovering unique haplotypes, do not use identities!
-  3. Go through list of unique haplos and record changes to reflib2. The rules for collapsing unique haplotypes are: maximum of three entries for each unique haplotype per species. When a haplotype is shared between 2 or more species, record those species and form a group. Name group and change accession number to group initials (2), followed by group number and 4 zeros and individual number. The rest of the header contains the Group Name for Family (i.e., _Agonidae1_) followed by the group code (i.e., _AG1_) followed by a unique species identifier that is sequential for all groups (i.e., _species1_). Each haplotype in a group will have the exact same Family, Genus and Species text to avoid any program error. For example, each entry for Agonidae1 group is AG100001_Agonidae1_AG1_species1, AG100002_Agonidae1_AG1_species1, and AG100003_Agonidae1_AG1_species1.
-  4. Integrate new header file into edited reflib2 -> save as reflib3.
-  5. Groups with 2 or more species and/or genera are potential Genbank misidentifications. 
-  6. Parse all entries per group's Family in reflib2, create phylogeny in R, and inspect. (NB. do not used collapsed library to parse Family entries).
 
-**Calculate 95% cut-off value of intraspecific distances and generate list of GenBank accession numbers greater than cut-off.** <a name="step6"/>
-1. Generate list of unique species from reflib3 using sed and excel
-2. Parse reflib3 for each species and create one new file for each species using awk.
-3. Align each species file separately using mafft.
-4. Analyze each aligned species file in R, calculating intraspecific K2P distances min, mean, max, and stdev. Write to file.
-5. Calculate the grand mean of means and the average sd. Calculate 95% cut-off as 4.5 average sd* of grand mean. 
-(*Chebyshev’s inequality was used to determine the 95% confidence interval as the distribution of average pairwise intraspecific variation was heavily skewed towards zero).
-a. Calculate the average sd using the formula: Average S.D. = √ ((n<sub>1</sub>-1)s<sub>1</sub><sup>2</sup> +  (n<sub>2</sub>-1)s<sub>2</sub><sup>k</sup> + … +  (n<sub>k</sub>-1)s<sub>k</sub><sup>2</sup>) /  (n<sub>1</sub>+n<sub>2</sub> + … + n<sub>k</sub> – k) where nk: Sample size for kth group, sk: Standard deviation for kth group, and k: Total number of groups
-6. Highlight each species with a max value greater than the 95% cut-off and generate a Family phylogeny.
+**5. Identify unique haplotypes and collapse entries** <a name="step5"/>
 
-**Visually inspect potential GenBank ID errors using phylogenetic trees and remove entries from reference library.** <a name="step7"/>
+5.1	Align sequence file from step 4.9.<br> 
+5.2 Use R package ‘haplotypes’ to discover unique haplotypes. Make sure to use raw genetic distances instead of identities.<br> 
+5.3	Go through list of unique haplotypes and remove duplicates in the file obtained from step 4.9 using the following rules:<br> 
+   5.3.1	 maximum of three entries for each unique haplotype per species.<br> 
+   5.3.2	 When a haplotype is shared between 2 or more species, record those species and form a group.<br> 
+   5.3.3	 Name group and change accession number to group initials (2), followed by group number and 4 zeros and individual number. The rest of the header contains the Group Name for Family (i.e. Agonidae1) followed by the group code (i.e., AG1) followed by a unique species identifier that is sequential for all groups (i.e. species1). Each haplotype in a group will have the exact same Family, Genus and Species text to avoid any program error. For example, each entry for Agonidae1 group is AG100001_Agonidae1_AG1_species1, AG100002_Agonidae1_AG1_species1, and AG100003_Agonidae1_AG1_species1.<br> 
+5.4	All groups are potential GenBank errors, especially if they contain more than one genus or higher.<br> 
+5.5	Parse all entries per group's Family in file from step 4.9 (removing obvious large numbers of sequence duplicates to make tree readable), create phylogeny in R.<br> 
+5.6	Inspect and remove all species that are obvious errors.<br> 
 
-For each species that was identified outside of the range, a NJ tree for all sequences within the Family was generated and individual pairwise distance matrices were examined. Obvious outliers were identified as (1) single Genbank entries that were placed outside of a monophyletic species clade, (2) single Genbank entries that had genetic distances with all other conspecifics above the cutoff. In these cases, the single Genbank entry for that species was removed. Once removed, each species fell within the 95% confidence interval. Less obvious outliers occurred in species with large distributions that may represent phylogeographic variation. The entire species was removed in these cases as we could not reasonably assume the cause of high intraspecific distance for any specific Genbank record. 
 
-Unique haplotypes that were shared among species, genera, and families were also examined. All haplotypes shared among families were examined for outliers, which were obvious in all cases and those entries removed so each unique haplotype was shared at or below the genus level. Most cases where haplotypes were shared among species or genera were treated as groups where species level could not be resolved. This approach was favoured over including all species in an overall genus group as haplotype sharing only applied to a subset of species within a genus, offering the infest level of taxonomic assignment possible. 
+**6. Calculate 95% cut-off value of intraspecific distances and generate list of GenBank accession numbers greater than cut-off.** <a name="step6"/>
+
+**NOTE:** This step removes potential errors that weren’t caught by the group sharing in Step 5.4. In this step, only species with multiple haplotypes are examined to look at intraspecific variation. Then species with very high intraspecific variation are removed. It is important to note that this may inadvertently remove invasive species that come from very different source populations in the case of multiple incursion events or very cosmopolitan species with large geographic ranges and naturally high levels of intraspecific variation. In the latter situation, if there are many sequences available, remove sequences sourced from geographically distant individuals (e.g. European or Asian populations) if location information is present in the GenBank record. 
+
+6.1	Generate list of unique species/groups from file in step 5.6.<br>
+6.2	Parse file from step 5.6 for each species and create one new file for each species.<br>
+6.3	Align each species file separately using mafft.<br>
+6.4	Analyze each aligned species file in R (package ‘ape’), calculating intraspecific K2P distances min, mean, max, and stdev.<br>
+6.5	Calculate the grand mean of means and the average sd. Calculate 95% confidence interval as 4.5 average sd* of grand mean.<br>
+**Chebyshev’s inequality** was used to determine the 95% confidence interval as the distribution of average pairwise intraspecific variation was heavily skewed towards zero.Calculate the average sd using the formula:<br> Average S.D. = √ ((n<sub>1</sub>-1)s<sub>1</sub><sup>2</sup> +  (n<sub>2</sub>-1)s<sub>2</sub><sup>k</sup> + … +  (n<sub>k</sub>-1)s<sub>k</sub><sup>2</sup>) /  (n<sub>1</sub>+n<sub>2</sub> + … + n<sub>k</sub> – k)<br> where nk: Sample size for kth group, sk: Standard deviation for kth group, and k: Total number of groups
+6.6 Highlight each species with a max value greater than the 95% cut-off and generate a Family phylogeny.<br>
+
+**7. Visually inspect potential GenBank ID errors using phylogenetic trees and remove entries from reference library.** <a name="step7"/>
+
+For each species that was identified outside of the range, a NJ tree for all sequences within the Family was generated and individual pairwise distance matrices were examined. Obvious outliers were identified as (1) single GenBank entries that were placed outside of a monophyletic species clade, (2) single GenBank entries that had genetic distances with all other conspecifics above the cutoff. In these cases, the single GenBank entry for that species was removed. Once removed, if each species fell within the 95% confidence interval, those haplotypes were retained. Less obvious outliers occurred in species with large distributions that may represent phylogeographic variation. The entire species was removed in these cases as we could not reasonably assume the cause of high intraspecific distance for any specific GenBank record. 
+
+Unique haplotypes that were shared among species, genera, and families were also examined. All haplotypes shared among families were examined for outliers, which were obvious in all cases and those entries removed so each unique haplotype was shared at or below the genus level. Most cases where haplotypes were shared among species or genera were treated as groups where species level could not be resolved. This approach was favoured over including all species in an overall genus group as haplotype sharing only applied to a subset of species within a genus, offering the lowest level of taxonomic assignment possible. 
+
 
