@@ -95,10 +95,10 @@ The final list of marine species in Canada was comprised of the list derived fro
 6.2	Parse file from step 5.6 for each species and create one new file for each species.<br>
 6.3	Align each species file separately using mafft.<br>
 6.4	Analyze each aligned species file in R (package ‘ape’), calculating intraspecific K2P distances min, mean, max, and stdev.<br>
-6.5	Calculate the grand mean of means and the average sd. Calculate 95% confidence interval as 4.5 average sd* of grand mean.**Chebyshev’s inequality** was used to determine the 95% confidence interval as the distribution of average pairwise intraspecific variation was heavily skewed towards zero.<br>
+6.5	Calculate the grand mean of means and the average sd. Calculate 95% confidence interval as 4.5 average sd* of grand mean. [**Chebyshev’s inequality**](https://en.wikipedia.org/wiki/Chebyshev%27s_inequality) was used to determine the 95% confidence interval as the distribution of average pairwise intraspecific variation was heavily skewed towards zero.Calculate the average sd using the formula:<br> 
 
-<br>Calculate the average sd using the formula:<br> 
 <br>Average S.D. = √ ((n<sub>1</sub>-1)s<sub>1</sub><sup>2</sup> +  (n<sub>2</sub>-1)s<sub>2</sub><sup>k</sup> + … +  (n<sub>k</sub>-1)s<sub>k</sub><sup>2</sup>) /  (n<sub>1</sub>+n<sub>2</sub> + … + n<sub>k</sub> – k)<br> 
+
 <br>where nk: Sample size for kth group, sk: Standard deviation for kth group, and k: Total number of groups
 6.6 Highlight each species with a max value greater than the 95% cut-off and generate a Family phylogeny.<br>
 
