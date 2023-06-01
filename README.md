@@ -110,7 +110,7 @@ Specific methods for reference library construction under numbered headings of g
 
 <br>Average S.D. = √ ((n<sub>1</sub>-1)s<sub>1</sub><sup>2</sup> +  (n<sub>2</sub>-1)s<sub>2</sub><sup>k</sup> + … +  (n<sub>k</sub>-1)s<sub>k</sub><sup>2</sup>) /  (n<sub>1</sub>+n<sub>2</sub> + … + n<sub>k</sub> – k)<br> 
 
-<br>where nk: Sample size for kth group, sk: Standard deviation for _kth_ group, and k: Total number of groups
+<br>where nk: Sample size for kth group, sk: Standard deviation for _kth_ group, and k: Total number of groups<br>
 &emsp;**6.6** Highlight each species with a max value greater than the 95% cut-off and generate a Family phylogeny.<br>
 
 **Step 7. Visually inspect potential GenBank ID errors using phylogenetic trees and remove entries from reference library.** <a name="step7"/>
