@@ -108,9 +108,9 @@ Specific methods for reference library construction under numbered headings of g
 &emsp;**6.4**	Analyze each aligned species file in R (package ‘ape’), calculating intraspecific K2P distances min, mean, max, and stdev.<br>
 &emsp;**6.5**	Calculate the grand mean of means and the average sd. Calculate 95% confidence interval as 4.5 average sd* of grand mean. [**Chebyshev’s inequality**](https://en.wikipedia.org/wiki/Chebyshev%27s_inequality) was used to determine the 95% confidence interval as the distribution of average pairwise intraspecific variation was heavily skewed towards zero. Calculate the average sd using the formula:<br> 
 
-<br>Average S.D. = √ ((n<sub>1</sub>-1)s<sub>1</sub><sup>2</sup> +  (n<sub>2</sub>-1)s<sub>2</sub><sup>k</sup> + … +  (n<sub>k</sub>-1)s<sub>k</sub><sup>2</sup>) /  (n<sub>1</sub>+n<sub>2</sub> + … + n<sub>k</sub> – k)<br> 
+Average S.D. = √ ((n<sub>1</sub>-1)s<sub>1</sub><sup>2</sup> +  (n<sub>2</sub>-1)s<sub>2</sub><sup>k</sup> + … +  (n<sub>k</sub>-1)s<sub>k</sub><sup>2</sup>) /  (n<sub>1</sub>+n<sub>2</sub> + … + n<sub>k</sub> – k)<br> 
 
-<br>where nk: Sample size for kth group, sk: Standard deviation for _kth_ group, and k: Total number of groups<br>
+where nk: Sample size for kth group, sk: Standard deviation for _kth_ group, and k: Total number of groups<br>
 &emsp;**6.6** Highlight each species with a max value greater than the 95% cut-off and generate a Family phylogeny.<br>
 
 **Step 7. Visually inspect potential GenBank ID errors using phylogenetic trees and remove entries from reference library.** <a name="step7"/>
