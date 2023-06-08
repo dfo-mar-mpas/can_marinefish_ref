@@ -53,7 +53,7 @@ id_fun <- function(x,tax_order,return="id"){ #extract the lowest id key
 
     # #itis classificaiton 
     # out <-  classification(species_list$Species,db="itis")
-    load("data/robis_classification_itis.RData")
+    load("output/robis_classification_itis.RData")
     
     #rbind it together
     out_df1 <- do.call(rbind,out)%>%
@@ -68,7 +68,7 @@ id_fun <- function(x,tax_order,return="id"){ #extract the lowest id key
 
     #gbif on the unclassified------------
     #out2 <- classification(null_sp,db="gbif")
-    load("data/robis_classification_gbif_missing.RData")
+    load("output/robis_classification_gbif_missing.RData")
     
     out2_df1 <- do.call(rbind,out2)%>%
       mutate(sp = row.names(.),
@@ -95,8 +95,8 @@ id_fun <- function(x,tax_order,return="id"){ #extract the lowest id key
     rownames(out2_df2) <- NULL
 
     # ### save interim outputs
-    #   save(out,file="data/robis_classification_itis.RData") #save the interim outputs so that you don't have to re-run. 
-    #   save(out2,file="data/robis_classification_gbif_missing.RData")
+    #   save(out,file="output/robis_classification_itis.RData") #save the interim outputs so that you don't have to re-run. 
+    #   save(out2,file="output/robis_classification_gbif_missing.RData")
 
   #identify the keys for each species ---- 
   
