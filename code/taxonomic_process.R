@@ -46,161 +46,57 @@ id_fun <- function(x,tax_order,return="id"){ #extract the lowest id key
     species_list <- read.csv("data/Coad_OBIS_fish_list_Canada.csv")
 
 ## run classification on the species list 
-
-    #tax order
-    tax_order <- c("kingdom","subkingdom","infrakingdom","phylum","subphylum","infraphylum","superclass","class",      
-                   "order","suborder","family","subfamily","genus","species")   
-
-    # #itis classificaiton 
-    # out <-  classification(species_list$Species,db="itis")
-    load("output/robis_classification_itis.RData")
     
-    #rbind it together
-    out_df1 <- do.call(rbind,out)%>%
-      mutate(sp = row.names(.),
-             sp = gsub('[[:digit:]]+', '', sp),
-             sp = gsub("[[:punct:]]", "", sp))
-
-    #key out species not identified in itis by taxize::classificaiton
-    null_sp <- out_df1%>%
-      filter(is.na(rank))%>%
-      pull(sp)
-
-    #gbif on the unclassified------------
-    #out2 <- classification(null_sp,db="gbif")
-    load("output/robis_classification_gbif_missing.RData")
+    #using worms--
+    worms_classification <- list()
     
-    out2_df1 <- do.call(rbind,out2)%>%
-      mutate(sp = row.names(.),
-             sp = gsub('[[:digit:]]+', '', sp),
-             sp = gsub("[[:punct:]]", "", sp))
-    
-    #gbif doesn't return all the variables that itis does. So we have to pad the dataframe. 
-    
-    gbif_missing <- setdiff(tax_order,unique(out2_df1$rank))
-    itis_missing <- setdiff(unique(out2_df1$rank),tax_order)
-    
-    out2_df2 <- out2_df1%>%
-                rbind(.,
-                      data.frame(sp=rep(unique(out2_df1$sp),each=length(gbif_missing)),
-                                 rank=rep(gbif_missing,length(unique(out2_df1))),
-                                 name=NA,
-                                 id=NA)%>%dplyr::select(names(out2_df1)))%>%
-                filter(rank != itis_missing)%>%
-                mutate(rank=factor(rank,levels=tax_order))%>%
-                arrange(sp,rank)
-    
-    #clean rownames
-    rownames(out_df1) <- NULL
-    rownames(out2_df2) <- NULL
-
-    # ### save interim outputs
-    #   save(out,file="output/robis_classification_itis.RData") #save the interim outputs so that you don't have to re-run. 
-    #   save(out2,file="output/robis_classification_gbif_missing.RData")
-
-  #identify the keys for each species ---- 
-  
-  names <- out_df1%>%
-           filter(!sp %in% null_sp)%>%
-           pull(sp)%>%
-           unique()
-  
-    ##ITIS
-      #key out the minimum taxonomic level and the associated id
-        out_id <- data.frame(sp=names,id=NA,rank=NA)
+    for(i in 1:nrow(species_list)){
       
-      #extract IDs ** couldn't get this to work quickly wiht group_by for some reason so this is slow but it works. 
-        for(i in 1:nrow(out_id)){out_id[i,c("id")] <- id_fun(out_df1%>%filter(sp==out_id[i,"sp"]),tax_order = tax_order,return="id")
-                                 out_id[i,c("rank")] <- id_fun(out_df1%>%filter(sp==out_id[i,"sp"]),tax_order = tax_order,return="rank")}
+      message(paste0("Working on ",species_list[i,"Species"]," ",i,"/",nrow(species_list)))
       
-      ##GBIF
-        #key out the minimum taxonomic level and the associated id
-        out_id_gbif <- data.frame(sp=null_sp,id=NA,rank=NA)
-        
-        #extract IDs ** couldn't get this to work quickly wiht group_by for some reason so this is slow but it works. 
-        for(i in 1:nrow(out_id_gbif)){out_id_gbif[i,c("id")] <- id_fun(out2_df1%>%filter(sp==out_id_gbif[i,"sp"]),tax_order = tax_order,return="id")
-                                      out_id_gbif[i,c("rank")] <- id_fun(out2_df1%>%filter(sp==out_id_gbif[i,"sp"]),tax_order = tax_order,return="rank")}
-        
-        
-#assemble dataframe in wide format ----
-out_df <- out_df1%>%
-          filter(rank %in% tax_order)%>%
-          mutate(ord=factor(rank,levels=tax_order))%>%
-          arrange(sp,ord)%>%
-          dplyr::select(sp,name,rank)%>%
-          spread(.,key=rank,value=name)%>%
-          dplyr::select(sp,all_of(tax_order))%>%
-          left_join(.,out_id%>%dplyr::select(sp,id))%>%
-          mutate(db="itis")%>%
-          rbind(.,
-                out2_df2%>%
-                  filter(rank %in% tax_order)%>%
-                  mutate(ord=factor(rank,levels=tax_order))%>%
-                  arrange(sp,ord)%>%
-                  dplyr::select(sp,name,rank)%>%
-                  spread(.,key=rank,value=name)%>%
-                  dplyr::select(sp,all_of(tax_order))%>%
-                  left_join(.,out_id_gbif%>%dplyr::select(sp,id))%>%
-                  mutate(db="gbif"))
-        
-## there are three sub-species of two species groups Oncorhynchus clarkii and Esox americanus so we need the sub-species tag
-        out_df$subspecies <- NA
-        out_df[out_df$species=="Esox americanus","subspecies"] <- c("Esox americanus americanus","Esox americanus vermiculatus")
-        out_df[out_df$species=="Oncorhynchus clarkii","subspecies"] <- c("Oncorhynchus clarkii bouvieri","Oncorhynchus clarkii clarkii","Oncorhynchus clarkii lewisi")
+      worms_classification[[species_list[i,"Species"]]] <- worms_classify(species_list[i,"Species"])
+      
+      }
+    
+    worms_df <- do.call("rbind",worms_classification)
+    
+    ## now re-do the analysis using fuzzy matching for the missing names using the worrms API and wm_records_name  
+    null_sp <- data.frame(org=worms_df%>%filter(is.na(AphiaID))%>%pull(input),
+                          fixed=NA)
+    
+    for(i in null_sp$org){
+      
+      null_sp[null_sp$org==i,"fixed"] <- wm_records_taxamatch(name=i,marine_only=FALSE)%>%
+        data.frame()%>%pull(valid_name)
+      
+    }
+    
+    worms_classification2 <- list()
+    
+    for(i in 1:nrow(null_sp)){
+      
+      message(paste0("Working on ",null_sp[i,"org"]," ",i,"/",nrow(null_sp)))
+      
+      worms_classification2[[null_sp[i,"org"]]] <- worms_classify(null_sp[i,"fixed"])
+      
+    }
+    
+    null_df <- do.call("rbind",worms_classification2)%>%
+                mutate(input=null_sp$org) #this will match the original data
+    
+    #now add those entries to the database. 
+    worms_df <- worms_df%>%
+                filter(!is.na(AphiaID))%>%
+                rbind(.,null_df)
+    
+    #fix one error for environment
+    worms_df%>%filter(env=="") # Synaphobranchus pinnatus -- marine animal
+    
+    worms_df <- worms_df%>%
+                mutate(env=ifelse(env=="","Marine",env))
 
-## View the mismatches
-        out_df%>%
-          mutate(spp = case_when(is.na(subspecies)~species,
-                                 !is.na(subspecies)~subspecies),
-                 match=sp==spp)%>%
-          filter(!match)%>%
-          dplyr::select(sp,spp) #note these are spelling errors
-        
-    #save the interim output
-        save(out_df,file = "output/taxonomy_wide.RData")
-        
-# key out whether the fish is freshwater or marine using rfishbase ------------
-        sp_names <- out_df%>%distinct(species,.keep_all=TRUE)%>%pull(species)
+    save(worms_df,file = "output/taxonomy_wide.RData")
 
-        sp_fishbase <- data.frame(species=sp_names,domain=NA,accepted=NA)
-        
-        for(i in 1:length(sp_names)){
-          
-          #progress message. 
-          message(paste0("Working on ",sp_names[i]," ",i," of ",length(sp_names)))
-          
-          temp <- rfishbase::species(sp_names[i])%>%
-                  suppressMessages() # rfishbase returns - Joining with `by = join_by(SpecCode)`
-          
-            if(nrow(temp) == 0){sp_fishbase[i,"domain"] = "unspecified"}else{
-              sp_fishbase[i,"domain"]  <-  temp%>%
-                                           data.frame()%>%
-                                           mutate(domain = ifelse(Saltwater==1 | Brack==1,"Marine","Freshwater"))%>% #is the fish within the marine environment. 
-                                           pull(domain)
-            }
-          
-        }
-        
-        #save interim output
-        save(sp_fishbase,file="output/sp_fishbase.RData")
-        
-        #get the ones not in fishbase with exact matches. 
-        null_fishbase <- sp_fishbase%>%
-                         filter(domain=="unspecified")
-        
-        
-        null_fishbase_habitat <- data.frame(species=null_fishbase$species,domain=NA)
-        
-        for(i in 1:nrow(null_fishbase)){
-          
-          message(paste0("working on ",null_fishbase[i,"species"]," ",i," of ",nrow(null_fishbase)))
-          
-          null_fishbase_habitat[i,c("domain","accepted")] <- gbif_alt_habitat(null_fishbase[i,"species"])[,c("habitat","accepted")]
-          
-        }
-        
-        save(null_fishbase_habitat,file="output/null_fishbase_habitat.RData") #you can see which do not have accepted names according to GBIF && fishbase. 
-        
 #now identify what ocean they were identified in ------------
         
         ocean_ord <- c("Atlantic","Arctic","Pacific")
@@ -231,7 +127,7 @@ out_df <- out_df1%>%
         names(bb_zones) <- ocean_ord
         
         oceans <- bioregions%>%
-                  filter(REGION %in% ocean_ord)%
+                  filter(REGION %in% ocean_ord)%>%
                   group_by(REGION)%>%
                   summarise(geometry=st_union(geometry))%>%
                   ungroup()%>%
@@ -243,9 +139,10 @@ out_df <- out_df1%>%
         
         #for each species check the occurrence records for each region
         
-        sp_names <- out_df$species
+        sp_names <- worms_df$species
         
         for(i in sp_names){
+          
           message(paste0("working on "),i) #progress message 
           
           sp_temp <- NULL
@@ -254,7 +151,7 @@ out_df <- out_df1%>%
           
             message(paste0(names(bb_zones)[j])," record search ..")  
             
-            temp <- occurrence(i,geometry = bb_zones[j])
+            temp <- robis::occurrence(taxonid=worms_df%>%filter(species==i)%>%pull("AphiaID"),geometry = bb_zones[j])
             
             if(length(temp) !=0){sp_temp <- rbind(sp_temp,temp%>%
                                                     mutate(ocean = (names(bb_zones)[j]))%>%
@@ -271,7 +168,7 @@ out_df <- out_df1%>%
         
         #narrow down to within the EEZ and within a threshold of the EEZ
         
-        eez_thresh = 200 #distance in km for an obis observation to be associated 
+        eez_thresh = 250 #distance in km for an obis observation to be associated 
         
         robis_names <- dir("output/robis_records/",full.names = TRUE) #these are the species within the bounding boxes 
         
