@@ -10,29 +10,7 @@
     library(rfishbase)
     library(rgbif)
 
-#functions -------
-id_fun <- function(x,tax_order,return="id"){ #extract the lowest id key 
-  
-  id <- x%>%
-    filter(rank %in% tax_order)%>%
-    mutate(rank=factor(rank,levels=tax_order))%>%
-    arrange(rank)%>%
-    slice(n())%>%
-    pull(id)%>%
-    as.numeric()
-  
-  rank <- x%>%
-    filter(rank %in% tax_order)%>%
-    mutate(rank=factor(rank,levels=tax_order))%>%
-    arrange(rank)%>%
-    slice(n())%>%
-    pull(rank)%>%
-    as.character()
-  
-  if(return=="id"){return(id)}
-  if(return=="rank"){return(rank)}
-  
-}
+
 
 #projections -----------
     latlong <- "+proj=longlat +datum=NAD83 +no_defs +ellps=GRS80 +towgs84=0,0,0"
@@ -45,9 +23,9 @@ id_fun <- function(x,tax_order,return="id"){ #extract the lowest id key
 #load species list --------
     species_list <- read.csv("data/Coad_OBIS_fish_list_Canada.csv")
 
-## run classification on the species list 
+## run classification on the species list ---------------
     
-    #using worms--
+    #Identify taxonomy, AphiaID and habitat (env - Marine, Freshwater or Brackish)
     worms_classification <- list()
     
     for(i in 1:nrow(species_list)){
@@ -58,39 +36,42 @@ id_fun <- function(x,tax_order,return="id"){ #extract the lowest id key
       
       }
     
+    #format as data.frame
     worms_df <- do.call("rbind",worms_classification)
     
-    ## now re-do the analysis using fuzzy matching for the missing names using the worrms API and wm_records_name  
+    
+    ## Identify and fix miss-spelled names  
     null_sp <- data.frame(org=worms_df%>%filter(is.na(AphiaID))%>%pull(input),
                           fixed=NA)
     
     for(i in null_sp$org){
       
-      null_sp[null_sp$org==i,"fixed"] <- wm_records_taxamatch(name=i,marine_only=FALSE)%>%
+      null_sp[null_sp$org==i,"fixed"] <- wm_records_taxamatch(name=i,marine_only=FALSE)%>% #taxamatch does a better job finding records that have close spelling
         data.frame()%>%pull(valid_name)
       
     }
     
+    #re-run with the new names 
     worms_classification2 <- list()
     
     for(i in 1:nrow(null_sp)){
       
       message(paste0("Working on ",null_sp[i,"org"]," ",i,"/",nrow(null_sp)))
       
-      worms_classification2[[null_sp[i,"org"]]] <- worms_classify(null_sp[i,"fixed"])
+      worms_classification2[[null_sp[i,"org"]]] <- worms_classify(null_sp[i,"fixed"]) #still keep associated with the original name
       
     }
     
     null_df <- do.call("rbind",worms_classification2)%>%
                 mutate(input=null_sp$org) #this will match the original data
     
-    #now add those entries to the database. 
+    #Finalize the worms database 
     worms_df <- worms_df%>%
                 filter(!is.na(AphiaID))%>%
                 rbind(.,null_df)
     
     #fix one error for environment
-    worms_df%>%filter(env=="") # Synaphobranchus pinnatus -- marine animal
+    worms_df%>%filter(env=="") # Synaphobranchus pinnatus -- marine animal but was not keyed out as such in WORMS
     
     worms_df <- worms_df%>%
                 mutate(env=ifelse(env=="","Marine",env))
@@ -152,6 +133,7 @@ id_fun <- function(x,tax_order,return="id"){ #extract the lowest id key
                     pull(species)
         
         eez_thresh = 250 #distance in km for an obis observation to be associated 
+        
         
         for(i in sp_names){
           
@@ -240,5 +222,7 @@ save(ocean_intersection,file="output/ocean_intersection.RData")
 #bind the output together
 ocean_df <- do.call("rbind",ocean_intersection)%>%
             arrange(species,ocean)%>%
-            left_join(.,worms_df)
+            left_join(.,worms_df)%>%
+            distinct(AphiaID,.keep_all=TRUE) #note there are 44 duplicates in the data.frame 
 
+save(ocean_df,file="output/ocean_df.RData")
