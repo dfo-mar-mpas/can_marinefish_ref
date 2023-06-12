@@ -221,6 +221,11 @@ save(ocean_intersection,file="output/ocean_intersection.RData")
 ocean_df <- do.call("rbind",ocean_intersection)%>%
             arrange(species,ocean)%>%
             left_join(.,worms_df)%>%
-            distinct(AphiaID,.keep_all=TRUE) #note there are 44 duplicates in the data.frame 
+            distinct(AphiaID,.keep_all=TRUE)%>% #note there are 44 duplicates in the data.frame 
+            rbind(., 
+                  worms_df%>%#add the freshwater only species that weren't used in the ocean intersection analysis.
+                    filter(env=="Freshwater")%>%
+                    mutate(ocean="Freshwater",dist=NA)%>%
+                    dplyr::select(names(ocean_df)))
 
 save(ocean_df,file="output/ocean_df.RData")
