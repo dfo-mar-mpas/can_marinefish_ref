@@ -1,14 +1,16 @@
 <img src="inst/hexlogo-01.png" align="left" width="200px"/>
 
-# CanFish - An environmental DNA reference database for Canadian Marine fish species using 12s and 16s genes in the Atlantic and Pacific Oceans.
+# CanFish - An environmental DNA reference database for Canadian Marine fish species using 12s and 16s genes.
 
 <br clear="left"/>
 
-Here are two custom DNA reference libraries for marine fish (_Actinopterygii_ only) in Canada (Pacific and Atlantic Oceans) for the 12S and 16S amplicons described in [He et al., 2022](#he_ref). 
+Here are two custom DNA reference libraries for fish species (_Actinopterygii_ only) in Canada for the 12S and 16S amplicons described in [He et al., 2022](#he_ref). This library is focussed primarily on marine species in the Atlantic and Pacific oceans but also includes references for 143 Freshwater and 203 species located in the Arctic region. 
+
+<img src="inst/combination.png" align="center" width="400px"/>
 
 # **Citation**
 
-Westfall, K.M., Abbot, C., Gilmore, S., He, X., Jeffery, N.J., Rubidge, E.R., and R.R.E. Stanley. CanFish - An evironmental DNA reference database for Canadian Marine fish species using 12s and 16s genes in the Atlantic and Pacific Regions. [![DOI](https://zenodo.org/badge/636343579.svg)](https://zenodo.org/badge/latestdoi/636343579)
+Westfall, K.M., Abbot, C., Gilmore, S., He, X., Jeffery, N.J., Rubidge, E.R., and R.R.E. Stanley. CanFish - An evironmental DNA reference database for Canadian Marine fish species using 12s and 16s genes. [![DOI](https://zenodo.org/badge/636343579.svg)](https://zenodo.org/badge/latestdoi/636343579)
 
 ***
 
