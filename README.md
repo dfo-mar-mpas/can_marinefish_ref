@@ -6,7 +6,7 @@
 
 Here are two custom DNA reference libraries for fish species (_Actinopterygii_ only) in Canada for the 12S and 16S amplicons described in [He et al., 2022](#he_ref). This library is focussed primarily on marine species in the Atlantic and Pacific oceans but also includes references for 143 Freshwater and 203 species located in the Arctic region. 
 
-<img src="inst/combination.png" align="center" width="400px"/>
+<img src="inst/combo_plot.png" align="center" width="400px"/>
 
 # **Citation**
 
