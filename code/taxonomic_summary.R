@@ -122,7 +122,7 @@ p1 <- ggplot()+
 ggsave("inst/canada_map.png",p1,height=5,width=6,units="in",dpi=300)
 
 #combination for github readme
-png(filename = "inst/combination.png",height=12,width=6,units="in",res=300) 
- grid.arrange(test,p1,nrow=2)
+png(filename = "inst/combo_plot.png",height=6,width=12,units="in",res=300) 
+ grid.arrange(test,p1,ncol=2)
 dev.off()
   

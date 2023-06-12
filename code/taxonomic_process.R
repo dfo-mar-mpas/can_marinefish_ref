@@ -75,6 +75,7 @@
                 mutate(env=ifelse(env=="","Marine",env))
 
     save(worms_df,file = "output/taxonomy_wide.RData")
+    write.csv(worms_df,file="output/taxonomy_wide.csv",row.names=F)
 
 #now identify what ocean they were identified in ------------
         
@@ -225,7 +226,7 @@ ocean_df <- do.call("rbind",ocean_intersection)%>%
             rbind(., 
                   worms_df%>%#add the freshwater only species that weren't used in the ocean intersection analysis.
                     filter(env=="Freshwater")%>%
-                    mutate(ocean="Freshwater",dist=NA)%>%
+                    mutate(ocean="Freshwater",dist=0)%>%
                     dplyr::select(names(ocean_df)))
 
 save(ocean_df,file="output/ocean_df.RData")
