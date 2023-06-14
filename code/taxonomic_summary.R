@@ -12,6 +12,9 @@ library(gridExtra)
 
 sf_use_s2(FALSE)
 
+#original data 
+species_list <- read.csv("data/Coad_OBIS_fish_list_Canada.csv") 
+
 #load data from taxonomic_process.R
 load("output/ocean_df.RData")
 load("output/taxonomy_wide.RData")
@@ -125,4 +128,13 @@ ggsave("inst/canada_map.png",p1,height=5,width=6,units="in",dpi=300)
 png(filename = "inst/combo_plot.png",height=6,width=12,units="in",res=300) 
  grid.arrange(test,p1,ncol=2)
 dev.off()
+
+
+#summary information for taxonomic sleuthing. 
+
+mismatch_species <- worms_df%>%mutate(test = species != input)%>%filter(test)%>%dplyr::select(AphiaID,species,input)
+obis_null_records <- ocean_df%>%filter(is.na(ocean))%>%dplyr::select(AphiaID,species,input)
+
+write.csv(mismatch_species,file="output/species_mismatches.csv",row.names=FALSE)
+write.csv(obis_null_records,file="output/obis_null_records.csv",row.names=FALSE)
   
