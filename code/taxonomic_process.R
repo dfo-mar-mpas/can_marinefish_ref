@@ -10,6 +10,9 @@
     library(rfishbase)
     library(rgbif)
 
+#source function -----
+source('code/worms_classify.R')
+
 #projections -----------
     latlong <- "+proj=longlat +datum=NAD83 +no_defs +ellps=GRS80 +towgs84=0,0,0"
     utm <- "+proj=utm +zone=20 +datum=NAD83 +units=km +no_defs +ellps=GRS80 +towgs84=0,0,0" #works for the Scotian Shelf
