@@ -311,54 +311,19 @@ save(obis_missing_df,file="output/obis_missing_df.RData")
     
 ###Compile the original worms based database, new IDs from CaRMS and from the OBIS EEZ search. 
     can_spec_list <- rbind(worms_df%>%mutate(source="Org_CanFish"),
-                           carms_ocean_df%>%mutate(source="CaRMS")%>%select(c(names(worms_df),"source")),
-                           obis_missing_df%>%mutate(source="OBIS")%>%select(c(names(worms_df),"source")))
+                           carms_ocean_df%>%
+                             mutate(source="CaRMS")%>%
+                             filter(!AphiaID %in% unique(worms_df$AphiaID))%>%
+                             select(c(names(worms_df),"source")),
+                           obis_missing_df%>%
+                             mutate(source="OBIS")%>%
+                             filter(!AphiaID %in% unique(worms_df$AphiaID))%>%
+                             select(c(names(worms_df),"source")))%>%
+                      distinct(species,.keep_all=TRUE) #this will only account for the unqiue AphiaIDs - some nomenclature issues create repeats. 
     
     #save interim output
     save(can_spec_list,file="output/can_spec_list.RData")
                       
-## Extended search ------------ 
-    
-    #adjacent american Atlantic and pacific waters
-    us_alaska <- checklist(areaid = 265)%>%as_tibble()%>%mutate(ocean="Alaska",areaid = 265)
-    us_north_pacific <- checklist(areaid = 274)%>%as_tibble()%>%mutate(ocean="North Pacific",areaid=274)
-    us_north_atlantic <- checklist(areaid = 272)%>%as_tibble()%>%mutate(ocean="North Atlantic",areaid=272)
-
-    us_taxa <- rbind(us_alaska,us_north_pacific,us_north_atlantic)
-
-    #save interim output
-    save(us_taxa,file="output/obis_checklist_US.RData")
-
-    #format data
-    us_df <- us_taxa%>%
-         filter(taxonomicStatus == 'accepted',#keep if it has a valid iD
-         as.logical(is_marine)|as.logical(is_brackish), #keep if it is marine or brackish
-         superclass=="Actinopteri" | subclass=="Teleostei" | class=="Teleostei",
-         !is.na(species))%>% #keep the bony fishes
-         dplyr::select(scientificName,areaid,taxonID,bold_id,ncbi_id,kingdom,phylum,class,order,family,genus,species)%>%
-         rename(AphiaID = taxonID)
-
-    #identify the new taxa not within the databases
-    us_missing <- setdiff(us_df%>%pull(AphiaID),unique(c(worms_df%>%pull(AphiaID),
-                                                         missing_carms_id,
-                                                         missing_obis_id)))
-    
-    us_sp <- us_df%>%
-             filter(AphiaID %in% us_missing)%>%
-             pull(scientificName)
-    
-    areas <- data.frame(region=c("Alaska","North Pacific","North Atlantic"),
-                        areaid=c(265,274,272))
-    
-    for(i in us_sp){
-      
-      area_id <- 
-      
-      temp <- robis::occurrence(taxonid=us_df%>%filter(ScientificName==i)%>%distinct(AphiaID)%>%pull(AphiaID),areaid =)
-      
-      
-    }
-    
 
 # #create a simplified buffer for the search within set buffer of Canada. 
 # buf <- 250 #kms
