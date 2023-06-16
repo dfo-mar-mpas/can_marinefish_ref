@@ -146,24 +146,29 @@ source('code/worms_classify.R')
           
           sp_temp <- NULL
           
-          for(j in 1:3){
+          if(!file.exists(paste0("output/robis_records/robis_",gsub(" ","_",i),".RData"))){
+             for(j in 1:3){
+            
+                message(paste0(names(bb_zones)[j])," record search ..")  
+                
+                temp <- robis::occurrence(taxonid=worms_df%>%filter(species==i)%>%pull("AphiaID"),geometry = bb_zones[j])
+                
+                if(length(temp) !=0){sp_temp <- rbind(sp_temp,temp%>%
+                                                        mutate(ocean = (names(bb_zones)[j]))%>%
+                                                        dplyr::select(scientificName,species,
+                                                                      decimalLatitude,decimalLongitude,ocean))}
+                
+                rm(temp)
+                
+              }#end j loop
+              
+              #save interim outputs
+              save(sp_temp,file=paste0("output/robis_records/robis_",gsub(" ","_",i),".RData"))
+            }#end if file.exists logical
+            
+          if(file.exists(paste0("output/robis_records/robis_",gsub(" ","_",i),".RData"))){load(paste0("output/robis_records/robis_",gsub(" ","_",i),".RData"))}
           
-            message(paste0(names(bb_zones)[j])," record search ..")  
             
-            temp <- robis::occurrence(taxonid=worms_df%>%filter(species==i)%>%pull("AphiaID"),geometry = bb_zones[j])
-            
-            if(length(temp) !=0){sp_temp <- rbind(sp_temp,temp%>%
-                                                    mutate(ocean = (names(bb_zones)[j]))%>%
-                                                    dplyr::select(scientificName,species,
-                                                                  decimalLatitude,decimalLongitude,ocean))}
-            
-            #save interim outputs
-            save(sp_temp,file=paste0("output/robis_records/robis_",gsub(" ","_",i),".RData"))
-            
-            rm(temp)
-            
-          } #end 'j' loop
-          
           if(!is.null(sp_temp)){
             
           #format data as a spatial data.frame
@@ -177,6 +182,9 @@ source('code/worms_classify.R')
             
             ocean_dist <- sf_format%>%
                           mutate(ocean = ocean_ord[st_nearest_feature(.,oceans)])
+            
+            #progress message.
+            message(paste0("Calculating distances for ",nrow(ocean_dist)," points."))
             
             #now get the distance from each record to it's (Canadian) nearest ocean polygon
             for(j in 1:nrow(ocean_dist)){
@@ -195,7 +203,7 @@ source('code/worms_classify.R')
             
             out <- data.frame(species=i,
                    ocean = ocean_dist%>%pull(ocean)%>%unique()%>%paste(.,collapse="-"),
-                   dist = min(ocean_dist$dist)) #closest observation
+                   dist = min(ocean_dist$dist,na.rm=T)) #closest observation
             
           }else{
             
@@ -221,7 +229,7 @@ source('code/worms_classify.R')
           
         } #end 'i' loop
       
-#save the interium outputs
+#save the interim outputs
 save(ocean_intersection,file="output/ocean_intersection.RData")   
 
 #bind the output together
