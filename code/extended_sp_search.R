@@ -246,7 +246,8 @@ for(i in 1:length(sp_list)){
   worms_classification_us[[sp_list[i]]] <- worms_classify(sp_list[i])
   
 }
-  
+
+save(worms_classification_us,file="output/worms_classification_us.RData")
 
 
 #compile dataframe
