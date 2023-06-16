@@ -247,7 +247,10 @@ for(i in 1:length(sp_list)){
   
 }
 
+worms_classification_us <- do.call("rbind",worms_classification_us)
+
 save(worms_classification_us,file="output/worms_classification_us.RData")
+
 
 
 #compile dataframe
