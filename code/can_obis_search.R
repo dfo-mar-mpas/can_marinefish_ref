@@ -301,20 +301,17 @@ save(obis_missing_df,file="output/obis_missing_df.RData")
     save(ocean_intersection,file="missing_carms_ocean_intersection.RData")
     
     carms_ocean_df <- do.call("rbind",ocean_intersection)%>%
-      arrange(species,ocean)%>%
-      mutate(input=species)%>% #match for the species whereby the name from CaRMS doesn't match worms
-      left_join(.,carms_missing_df,by="input")%>% 
-      dplyr::select(-species.x)%>%
-      rename(species=species.y)%>%
-      distinct(AphiaID,.keep_all=TRUE)
-    filter(!is.na(ocean))
+                      arrange(species,ocean)%>%
+                      mutate(input=species)%>% #match for the species whereby the name from CaRMS doesn't match worms
+                      left_join(.,carms_missing_df,by="input")%>% 
+                      dplyr::select(-species.x)%>%
+                      rename(species=species.y)%>%
+                      distinct(AphiaID,.keep_all=TRUE)
     
     carms_null_obs <- carms_ocean_df%>%filter(is.na(ocean)) #these species have no records within the distance threshold of Canada
     
     carms_ocean_df <- carms_ocean_df%>%filter(!is.na(ocean))
-    
-    #there was a bug with 
-    
+
     #save interim outputs
     save(carms_ocean_df,file="output/carms_ocean_df.Rdata")
     save(carms_null_obs,file="output/carms_null_obs.RData")
@@ -327,53 +324,61 @@ save(obis_missing_df,file="output/obis_missing_df.RData")
     ocean_df2 <- ocean_df%>%
                  filter(!is.na(ocean),env !="Freshwater")%>%
                  mutate(source="Org_CanFish")%>%
-                 dplyr::select(c(names(worms_df),ocean,source))
+                 dplyr::select(c(names(worms_df),dist,ocean,source))
     
     #format CaRMs intput
-    carms_df <- carms_ocean_df%>%
-                filter(ocean=="")
+    carms_ocean_df2 <- carms_ocean_df%>%
+                       mutate(source="CaRMS")%>%
+                       filter(!is.na(dist))%>% #NA means they are not found near Canada
+                       dplyr::select(names(ocean_df2))
     
-                 
-    
-    can_spec_list <- rbind(worms_df%>%mutate(source="Org_CanFish"),
-                           carms_ocean_df%>%
-                             mutate(source="CaRMS")%>%
-                             filter(!AphiaID %in% unique(worms_df$AphiaID))%>%
-                             select(c(names(worms_df),"source")),
-                           obis_missing_df%>%
-                             mutate(source="OBIS")%>%
-                             filter(!AphiaID %in% unique(worms_df$AphiaID))%>%
-                             select(c(names(worms_df),"source")))%>%
-                      distinct(species,.keep_all=TRUE) #this will only account for the unqiue AphiaIDs - some nomenclature issues create repeats. 
-    
-    #save interim output
-    save(can_spec_list,file="output/can_spec_list.RData")
+    #format obis Canadian EEZ search
+    obis_ocean_df <- can_taxa%>% #assign an 'ocean' based back to the original extractions by OBIS regions
+                     filter(taxonomicStatus == 'accepted',#keep if it has a valid iD
+                            as.logical(is_marine)|as.logical(is_brackish), #keep if it is marine or brackish
+                            superclass=="Actinopteri" | subclass=="Teleostei" | class=="Teleostei",
+                            !is.na(species),
+                            !taxonID%in% unique(worms_df$AphiaID))%>% #most covered by the existing database
+                      mutate(ocean=factor(ocean,levels=ocean_ord))%>%
+                      rename(AphiaID = taxonID)%>%
+                      arrange(AphiaID,ocean)%>%
+                      group_by(AphiaID)%>%
+                      summarise(ocean=paste(ocean,collapse="-"))%>%
+                      ungroup()
                       
-
-# #create a simplified buffer for the search within set buffer of Canada. 
-# buf <- 250 #kms
-# 
-# can_buff <- canada_eez%>%
-#   st_buffer(buf*1000)%>% #buffer in km
-#   # st_bbox()%>%
-#   # st_as_sfc()%>%
-#   # st_as_sf()%>%
-#   st_transform(latlong)%>%
-#   st_as_sfc()%>%
-#   st_simplify()
-# 
-# plot_dim <- can_buff%>%
-#   st_transform(CanProj)%>%
-#   st_buffer((buf+100)*1000)%>%
-#   st_bbox()
-# 
-# #map it out to view the search area
-# p1 <- ggplot()+
-#   geom_sf(data=can_buff%>%st_transform(CanProj),fill=NA)+
-#   geom_sf(data=basemap,fill="grey70")+
-#   geom_sf(data=canada_eez,fill=NA)+
-#   geom_sf(data=Canada,fill="seagreen4")+
-#   theme_bw()+
-#   coord_sf(expand=0,xlim=plot_dim[c(1,3)],ylim=plot_dim[c(2,4)]);p1
-# 
-# ggsave(paste0("output/obis_seach_",buf,"km.png"),p1,width=6,height=6,dpi=300,units="in")
+     obis_ocean_df2 <- obis_ocean_df%>%
+                       left_join(.,obis_missing_df)%>% #add in the taxonomic data
+                       mutate(source="OBIS",dist=0)%>%
+                       dplyr::select(names(ocean_df2))
+     
+     #assemble the Canadian Species List
+     can_spec_list <- rbind(ocean_df2,carms_ocean_df2,obis_ocean_df2)
+     
+     #save interim output
+     save(can_spec_list,file="output/can_spec_list.RData")
+     
+     #format the extended obis serach from extended_sp_search.R
+     load("output/us_extracts_df.RData")
+     load("output/worms_classification_us.RData")
+     
+     usextended_ocean_df <- us_extracts_df%>%
+                            filter(distance<=1000)%>% #search radius of extended_sp_search.R was 1500 km so this can be modified. 
+                            rename(AphiaID = aphiaID,ocean=REGION)%>%
+                            group_by(AphiaID)%>%
+                            summarise(ocean=paste(ocean,collapse="-"))%>%
+                            ungroup()%>%
+                            left_join(.,worms_classification_us)%>%
+                            left_join(.,us_extracts_df%>%rename(AphiaID = aphiaID)%>%dplyr::select(AphiaID,distance))%>%
+                            mutate(source = "OBIS extended search")%>%
+                            rename(dist=distance)%>%
+                            dplyr::select(names(ocean_df2))%>%
+                            data.frame()
+       
+    #assemble the Canadian Species List with the addition of the extended
+     CanFish_df <- can_spec_list%>%
+                   mutate(domain = "eez focused")%>%
+                   rbind(.,usextended_ocean_df%>%mutate(domain="extended search"))
+          
+   #save the outputs
+     save(CanFish_df,file="output/CanFish_df.RData")
+     write.csv(CanFish_df,file="output/CanFish_df.csv",row.names=F)
