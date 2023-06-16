@@ -12,6 +12,9 @@ library(patchwork)
 
 sf_use_s2(FALSE)
 
+#load the classification 
+source("code/worms_classify.R")
+
 #projections -----------
 latlong <- "+proj=longlat +datum=NAD83 +no_defs +ellps=GRS80 +towgs84=0,0,0"
 CanProj <- "+proj=lcc +lat_1=49 +lat_2=77 +lat_0=63.390675 +lon_0=-91.86666666666666 +x_0=6200000 +y_0=3000000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs"
@@ -232,6 +235,20 @@ for(i in sp_list){
   save(us_extracts,file="output/us_extracts.RData") #will overwrite each loop
 }# i loop end
 
+## do the worrms extraction for the environment
+
+worms_classification_us <- list()
+
+for(i in 1:length(sp_list)){
+  
+  message(paste0("Working on ",sp_list[i]," ",i,"/",length(sp_list)))
+  
+  worms_classification_us[[sp_list[i]]] <- worms_classify(sp_list[i])
+  
+}
+  
+
+
 #compile dataframe
 
 us_extracts_df <- NULL
@@ -247,7 +264,7 @@ us_extracts_df <- us_extracts_df%>%
                                 filter(REGION==i)%>%
                                 rename(aphiaID=AphiaID)%>%
                                 dplyr::select(aphiaID,bold_id,ncbi_id,kingdom,phylum,class,order,family,genus))%>%
-                    dplyr::select(REGION,areaid,distance,aphiaID,bold_id,ncbi_id,kingdom,phylum,class,order,family,genus))
+                    dplyr::select(REGION,areaid,distance,aphiaID,bold_id,ncbi_id,kingdom,phylum,class,order,family,genus,species))
 }
 
 row.names(us_extracts_df) <- NULL
