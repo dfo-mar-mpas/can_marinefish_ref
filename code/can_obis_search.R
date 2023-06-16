@@ -377,8 +377,16 @@ save(obis_missing_df,file="output/obis_missing_df.RData")
     #assemble the Canadian Species List with the addition of the extended
      CanFish_df <- can_spec_list%>%
                    mutate(domain = "eez focused")%>%
-                   rbind(.,usextended_ocean_df%>%mutate(domain="extended search"))
+                   rbind(.,usextended_ocean_df%>%mutate(domain="extended search"))%>%
+                   mutate(inCanada = ifelse(dist == 0,"inside","outside"))
           
    #save the outputs
      save(CanFish_df,file="output/CanFish_df.RData")
      write.csv(CanFish_df,file="output/CanFish_df.csv",row.names=F)
+     
+    #quick summary stats
+     table(CanFish_df$domain) #how many from the Original CanFish ++ OBIS Canada ++ CaRMs vs outside
+     table(CanFish_df$source)
+     
+     table(CanFish_df$source,CanFish_df$inCanada)
+     
