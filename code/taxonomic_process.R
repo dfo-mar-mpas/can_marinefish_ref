@@ -126,6 +126,9 @@ source('code/worms_classify.R')
                   arrange(region)%>%
                   dplyr::select(-region)
         
+        save(bb_zones,file="data/bb_zones.RData")
+        save(oceans,file="data/oceans.RData")
+        
         #for each species check the occurrence records for each region
         
         ocean_intersection <- list()
