@@ -215,23 +215,28 @@ save(obis_missing_df,file="output/obis_missing_df.RData")
           
           sp_temp <- NULL
           
-          for(j in 1:3){
+          if(file.exists(paste0("output/robis_records/carms_extras/robis_",gsub(" ","_",i),".RData"))){
             
-            message(paste0(names(bb_zones)[j])," record search ..")  
-            
-            temp <- robis::occurrence(taxonid=carms_df%>%filter(ScientificName==i)%>%distinct(AphiaID)%>%pull(AphiaID),geometry = bb_zones[j])
-            
-            if(length(temp) !=0){sp_temp <- rbind(sp_temp,temp%>%
-                                                    mutate(ocean = (names(bb_zones)[j]))%>%
-                                                    dplyr::select(scientificName,species,
-                                                                  decimalLatitude,decimalLongitude,ocean))}
+            for(j in 1:3){
+              
+              message(paste0(names(bb_zones)[j])," record search ..")  
+              
+              temp <- robis::occurrence(taxonid=carms_df%>%filter(ScientificName==i)%>%distinct(AphiaID)%>%pull(AphiaID),geometry = bb_zones[j])
+              
+              if(length(temp) !=0){sp_temp <- rbind(sp_temp,temp%>%
+                                                      mutate(ocean = (names(bb_zones)[j]))%>%
+                                                      dplyr::select(scientificName,species,
+                                                                    decimalLatitude,decimalLongitude,ocean))}
+              
+              rm(temp)
+              
+            }#end j loop
             
             #save interim outputs
             save(sp_temp,file=paste0("output/robis_records/carms_extras/robis_",gsub(" ","_",i),".RData"))
-            
-            rm(temp)
-            
-          } #end 'j' loop
+          }#end if file.exists logical
+          
+          if(file.exists(paste0("output/robis_records/carms_extras/robis_",gsub(" ","_",i),".RData"))){load(paste0("output/robis_records/carms_extras/robis_",gsub(" ","_",i),".RData"))}
           
           if(!is.null(sp_temp)){
             
@@ -247,24 +252,27 @@ save(obis_missing_df,file="output/obis_missing_df.RData")
               ocean_dist <- sf_format%>%
                 mutate(ocean = ocean_ord[st_nearest_feature(.,oceans)])
              
+              #progress message.
+              message(paste0("Calculating distances for ",nrow(ocean_dist)," points."))
+                      
                   #now get the distance from each record to it's (Canadian) nearest ocean polygon
-                  for(j in unique(ocean_dist$ocean)){
+              
+              for(j in 1:nrow(ocean_dist)){
                     
                     ocean_dist[j,"dist"] <- st_distance(ocean_dist[j,],oceans%>%
                                                           filter(REGION == ocean_dist[j,]%>%pull(ocean)))%>%as.numeric()/1000
-                    
-                  } # end j loop
+                } # end j loop
               
               #get rid of any duplicate distances. 
               ocean_dist <- ocean_dist%>%distinct(dist,.keep_all=TRUE) 
               
               #if all distances are further than the limit only include the closest one
-              if(min(ocean_dist$dist)>eez_thresh){ocean_dist <- ocean_dist%>%
+              if(min(ocean_dist$dist,na.rm=TRUE)>eez_thresh){ocean_dist <- ocean_dist%>%
                 filter(dist==min(dist,na.rm=T))}else{ocean_dist <- ocean_dist%>%filter(dist<=eez_thresh)}
               
               out <- data.frame(species=i,
                                 ocean = ocean_dist%>%pull(ocean)%>%unique()%>%paste(.,collapse="-"),
-                                dist = min(ocean_dist$dist)) #closest observation
+                                dist = min(ocean_dist$dist,na.rm=T)) #closest observation
               
             }else{
               
@@ -305,11 +313,28 @@ save(obis_missing_df,file="output/obis_missing_df.RData")
     
     carms_ocean_df <- carms_ocean_df%>%filter(!is.na(ocean))
     
+    #there was a bug with 
+    
     #save interim outputs
     save(carms_ocean_df,file="output/carms_ocean_df.Rdata")
     save(carms_null_obs,file="output/carms_null_obs.RData")
     
-###Compile the original worms based database, new IDs from CaRMS and from the OBIS EEZ search. 
+###Compile the original worms based database, new IDs from CaRMS and from the OBIS EEZ search. -------------
+    
+    #format data from the original species list used in HE et al. (2022/2023)
+    load("output/ocean_df.RData")
+    
+    ocean_df2 <- ocean_df%>%
+                 filter(!is.na(ocean),env !="Freshwater")%>%
+                 mutate(source="Org_CanFish")%>%
+                 dplyr::select(c(names(worms_df),ocean,source))
+    
+    #format CaRMs intput
+    carms_df <- carms_ocean_df%>%
+                filter(ocean=="")
+    
+                 
+    
     can_spec_list <- rbind(worms_df%>%mutate(source="Org_CanFish"),
                            carms_ocean_df%>%
                              mutate(source="CaRMS")%>%
