@@ -14,6 +14,20 @@ Westfall, K.M., Abbot, C., Gilmore, S., He, X., Jeffery, N.J., Rubidge, E.R., an
 
 ***
 
+# **Usage**
+
+There is currently no authoritative, comprehensive checklist of marine fauna species for Canadian waters—applicable to fishes and other groups alike. The species inventory provided in this repository is an assembly compiled from the best available information, combining data from three primary sources: OBIS (Ocean Biogeographic Information System), CaRMS (Canadian Register of Marine Species), and Coad’s Canadian fish list. It is important to note the following caveats:
+
+* **OBIS** is a database of occurrence records, not a validated checklist. While OBIS records are required to match current name labels (in accordance with WoRMS) and to include geographical metadata, individual records may contain errors due to misidentification or data entry issues.
+
+* **CaRMS** provides a checklist generated in the early 2010s and is therefore outdated. It may not reflect recent taxonomic changes or new species records.
+
+* **Coad’s Canadian fish list** was last revised in 2013 and similarly does not capture more recent taxonomic revisions or newly observed species, particularly those with southern distributions expanding northward.
+
+This inventory should thus be used as an informed assembly rather than a definitive list. Users are advised to consider the limitations of the source data and to consult the original datasets or more recent literature as needed for critical applications.
+
+***
+
 These are reference libraries specifically constructed for amplicons of the following markers:
 
 1.	12S modified MiFish ([Miya et al., 2015](#miya_ref)). 
